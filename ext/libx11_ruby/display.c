@@ -50,11 +50,26 @@ rb_libx11_close_display(VALUE self, VALUE obj)
   return INT2FIX(ret);
 }
 
+/*
+ * Xlib DefaultRootWindow
+ */
+static VALUE
+rb_libx11_default_root_window(VALUE self, VALUE obj)
+{
+  Display *display;
+  Window window;
+
+  TypedData_Get_Struct(obj, Display, &display_type, display);
+  window = DefaultRootWindow(display);
+  return ULONG2NUM(window);
+}
+
 void
 Init_libx11_display(void)
 {
   rb_define_singleton_method(rb_mLibX11, "open_display", rb_libx11_open_display, 1);
   rb_define_singleton_method(rb_mLibX11, "close_display", rb_libx11_close_display, 1);
+  rb_define_singleton_method(rb_mLibX11, "default_root_window", rb_libx11_default_root_window, 1);
 
   rb_cDisplay = rb_define_class_under(rb_mLibX11, "Display", rb_cData);
 }

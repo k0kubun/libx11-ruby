@@ -2,8 +2,9 @@
 #define LIBX11_RUBY_H 1
 
 #include "ruby.h"
+#include <X11/Xlib.h>
 
-extern VALUE rb_mLibX11;
+VALUE rb_mLibX11;
 
 void Init_libx11_display(void);
 
