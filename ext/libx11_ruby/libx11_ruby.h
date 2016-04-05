@@ -7,5 +7,6 @@
 VALUE rb_mLibX11;
 
 void Init_libx11_display(void);
+void Init_libx11_window(void);
 
 #endif /* LIBX11_RUBY_H */
