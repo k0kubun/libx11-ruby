@@ -1,14 +1,14 @@
-require "bundler/gem_tasks"
-require "rspec/core/rake_task"
+require 'bundler/gem_tasks'
+require 'rspec/core/rake_task'
 
 RSpec::Core::RakeTask.new(:spec)
 
-require "rake/extensiontask"
+require 'rake/extensiontask'
 
 task :build => :compile
 
-Rake::ExtensionTask.new("libx11") do |ext|
-  ext.lib_dir = "lib/libx11"
+Rake::ExtensionTask.new('libx11_ruby') do |ext|
+  ext.lib_dir = 'lib/libx11'
 end
 
 task :default => [:clobber, :compile, :spec]

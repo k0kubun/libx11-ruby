@@ -1,3 +1,3 @@
-module Libx11
-  VERSION = "0.1.0"
+module LibX11
+  VERSION = '0.1.0'
 end

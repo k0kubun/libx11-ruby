@@ -5,7 +5,7 @@ require 'libx11/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'libx11'
-  spec.version       = Libx11::VERSION
+  spec.version       = LibX11::VERSION
   spec.authors       = ['Takashi Kokubun']
   spec.email         = ['takashikkbn@gmail.com']
 
@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   spec.bindir        = 'exe'
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
-  spec.extensions    = ['ext/libx11/extconf.rb']
+  spec.extensions    = ['ext/libx11_ruby/extconf.rb']
 
   spec.add_development_dependency 'bundler', '~> 1.11'
   spec.add_development_dependency 'rake', '~> 10.0'
