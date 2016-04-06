@@ -4,7 +4,7 @@
 VALUE rb_cDisplay;
 
 static size_t
-display_memsize(const void *arg)
+display_dsize(const void *arg)
 {
   const Display *display = arg;
   return sizeof(display);
@@ -15,7 +15,7 @@ const rb_data_type_t display_type = {
   .function = {
     .dmark = NULL,
     .dfree = NULL,
-    .dsize = display_memsize,
+    .dsize = display_dsize,
     .reserved = { NULL, NULL },
   },
   .parent = NULL,
