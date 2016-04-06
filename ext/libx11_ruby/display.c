@@ -50,6 +50,18 @@ rb_libx11_xclose_display(VALUE self, VALUE obj)
   return INT2FIX(ret);
 }
 
+/*
+ * Xlib DefaultScreen
+ */
+static VALUE
+rb_display_default_screen(VALUE self)
+{
+  Display *display;
+
+  TypedData_Get_Struct(self, Display, &display_type, display);
+  return INT2NUM(DefaultScreen(display));
+}
+
 void
 Init_libx11_display(void)
 {
@@ -57,4 +69,5 @@ Init_libx11_display(void)
   rb_define_singleton_method(rb_mLibX11, "xclose_display", rb_libx11_xclose_display, 1);
 
   rb_cDisplay = rb_define_class_under(rb_mLibX11, "Display", rb_cData);
+  rb_define_method(rb_cDisplay, "default_screen", rb_display_default_screen, 0);
 }
