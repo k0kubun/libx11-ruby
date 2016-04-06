@@ -48,11 +48,23 @@ rb_libx11_xnext_event(VALUE self, VALUE obj)
   return TypedData_Wrap_Struct(rb_cXEvent, &xevent_type, event);
 }
 
+static VALUE
+rb_xevent_type(VALUE self)
+{
+  XEvent *event;
+
+  TypedData_Get_Struct(self, XEvent, &xevent_type, event);
+  return INT2NUM(event->type);
+}
+
 void
 Init_libx11_event(void)
 {
   rb_define_singleton_method(rb_mLibX11, "xnext_event", rb_libx11_xnext_event, 1);
 
   rb_cXEvent = rb_define_class_under(rb_mLibX11, "XEvent", rb_cData);
+  rb_define_method(rb_cXEvent, "type", rb_xevent_type, 0);
+
   rb_define_const(rb_cXEvent, "KEY_PRESS_MASK", LONG2FIX(KeyPressMask));
+  rb_define_const(rb_cXEvent, "KEY_PRESS", INT2FIX(KeyPress));
 }
