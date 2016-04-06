@@ -54,4 +54,5 @@ Init_libx11_event(void)
   rb_define_singleton_method(rb_mLibX11, "xnext_event", rb_libx11_xnext_event, 1);
 
   rb_cXEvent = rb_define_class_under(rb_mLibX11, "XEvent", rb_cData);
+  rb_define_const(rb_cXEvent, "KEY_PRESS_MASK", LONG2FIX(KeyPressMask));
 }

@@ -102,6 +102,20 @@ rb_display_white_pixel(VALUE self, VALUE screen_obj)
   return ULONG2NUM(WhitePixel(display, screen));
 }
 
+/*
+ * Xlib XSelectInput
+ */
+static VALUE
+rb_display_xselect_input(VALUE self, VALUE window, VALUE event_mask)
+{
+  Display *display;
+  int ret;
+
+  TypedData_Get_Struct(self, Display, &display_type, display);
+  ret = XSelectInput(display, NUM2ULONG(window), NUM2LONG(event_mask));
+  return INT2NUM(ret);
+}
+
 void
 Init_libx11_display(void)
 {
@@ -113,4 +127,5 @@ Init_libx11_display(void)
   rb_define_method(rb_cDisplay, "default_screen", rb_display_default_screen, 0);
   rb_define_method(rb_cDisplay, "black_pixel", rb_display_black_pixel, 1);
   rb_define_method(rb_cDisplay, "white_pixel", rb_display_white_pixel, 1);
+  rb_define_method(rb_cDisplay, "xselect_input", rb_display_xselect_input, 2);
 }
