@@ -19,8 +19,23 @@ rb_libx11_xcreate_simple_window(VALUE self, VALUE display_obj, VALUE parent_wind
   return ULONG2NUM(ret);
 }
 
+/*
+ * Xlib XDestroyWindow
+ */
+static VALUE
+rb_libx11_xdestroy_window(VALUE self, VALUE display_obj, VALUE window)
+{
+  Display *display;
+  int ret;
+
+  TypedData_Get_Struct(display_obj, Display, &display_type, display);
+  ret = XDestroyWindow(display, NUM2ULONG(window));
+  return INT2NUM(ret);
+}
+
 void
 Init_libx11_window(void)
 {
   rb_define_singleton_method(rb_mLibX11, "xcreate_simple_window", rb_libx11_xcreate_simple_window, 9);
+  rb_define_singleton_method(rb_mLibX11, "xdestroy_window", rb_libx11_xdestroy_window, 2);
 }
