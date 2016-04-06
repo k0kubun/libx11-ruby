@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Takashi Kokubun']
   spec.email         = ['takashikkbn@gmail.com']
 
-  spec.summary       = 'Ruby binding for libx11 including xlib'
-  spec.description   = 'Ruby binding for libx11 including xlib'
+  spec.summary       = 'Ruby binding of libx11 mostly for xlib'
+  spec.description   = 'Ruby binding of libx11 mostly for xlib'
   spec.homepage      = 'https://github.com/k0kubun/libx11-ruby'
   spec.license       = 'MIT'
 

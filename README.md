@@ -1,6 +1,6 @@
 # LibX11
 
-Ruby binding for libx11 including xlib.
+Ruby binding of libx11 mostly for xlib.
 
 ## Status
 
