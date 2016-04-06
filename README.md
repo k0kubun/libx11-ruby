@@ -1,4 +1,4 @@
-# LibX11
+# LibX11 [![Build Status](https://travis-ci.org/k0kubun/libx11-ruby.svg?branch=master)](https://travis-ci.org/k0kubun/libx11-ruby)
 
 Ruby binding of libx11 mostly for xlib.
 
