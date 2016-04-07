@@ -71,6 +71,18 @@ rb_display_default_screen(VALUE self)
 }
 
 /*
+ * Xlib XDisplayString
+ */
+static VALUE
+rb_display_xdisplay_string(VALUE self)
+{
+  Display *display;
+
+  TypedData_Get_Struct(self, Display, &display_type, display);
+  return rb_str_new_cstr(XDisplayString(display));
+}
+
+/*
  * Xlib DefaultRootWindow
  */
 static VALUE
@@ -161,6 +173,7 @@ Init_libx11_display(void)
   rb_cDisplay = rb_define_class_under(rb_mLibX11, "Display", rb_cData);
   rb_define_method(rb_cDisplay, "default_root_window", rb_display_default_root_window, 0);
   rb_define_method(rb_cDisplay, "default_screen", rb_display_default_screen, 0);
+  rb_define_method(rb_cDisplay, "xdisplay_string", rb_display_xdisplay_string, 0);
   rb_define_method(rb_cDisplay, "black_pixel", rb_display_black_pixel, 1);
   rb_define_method(rb_cDisplay, "white_pixel", rb_display_white_pixel, 1);
   rb_define_method(rb_cDisplay, "xmap_window", rb_display_xmap_window, 1);
