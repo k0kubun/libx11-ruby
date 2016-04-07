@@ -56,7 +56,7 @@ rb_libx11_xset_error_handler(int argc, VALUE *argv, VALUE self)
 }
 
 void
-Init_libx11_error_handler(void)
+Init_libx11_xerror_event(void)
 {
   rb_define_singleton_method(rb_mLibX11, "xset_error_handler", rb_libx11_xset_error_handler, -1);
 

@@ -58,7 +58,7 @@ rb_xevent_type(VALUE self)
 }
 
 void
-Init_libx11_event(void)
+Init_libx11_xevent(void)
 {
   rb_define_singleton_method(rb_mLibX11, "xnext_event", rb_libx11_xnext_event, 1);
 
