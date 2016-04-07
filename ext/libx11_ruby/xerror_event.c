@@ -56,6 +56,14 @@ rb_libx11_xset_error_handler(int argc, VALUE *argv, VALUE self)
 }
 
 static VALUE
+rb_xerror_event_error_code(VALUE self)
+{
+  XErrorEvent *event;
+  TypedData_Get_Struct(self, XErrorEvent, &xerror_event_type, event);
+  return INT2FIX(event->error_code);
+}
+
+static VALUE
 rb_xerror_event_type(VALUE self)
 {
   XErrorEvent *event;
@@ -69,5 +77,28 @@ Init_libx11_xerror_event(void)
   rb_define_singleton_method(rb_mLibX11, "xset_error_handler", rb_libx11_xset_error_handler, -1);
 
   rb_cXErrorEvent = rb_define_class_under(rb_mLibX11, "XErrorEvent", rb_cData);
+  rb_define_method(rb_cXErrorEvent, "error_code", rb_xerror_event_error_code, 0);
   rb_define_method(rb_cXErrorEvent, "type", rb_xerror_event_type, 0);
+
+  // error codes
+  rb_define_const(rb_cXErrorEvent, "SUCCESS", INT2FIX(Success));
+  rb_define_const(rb_cXErrorEvent, "BAD_REQUEST", INT2FIX(BadRequest));
+  rb_define_const(rb_cXErrorEvent, "BAD_VALUE", INT2FIX(BadValue));
+  rb_define_const(rb_cXErrorEvent, "BAD_WINDOW", INT2FIX(BadWindow));
+  rb_define_const(rb_cXErrorEvent, "BAD_PIXMAP", INT2FIX(BadPixmap));
+  rb_define_const(rb_cXErrorEvent, "BAD_ATOM", INT2FIX(BadAtom));
+  rb_define_const(rb_cXErrorEvent, "BAD_CURSOR", INT2FIX(BadCursor));
+  rb_define_const(rb_cXErrorEvent, "BAD_FONT", INT2FIX(BadFont));
+  rb_define_const(rb_cXErrorEvent, "BAD_MATCH", INT2FIX(BadMatch));
+  rb_define_const(rb_cXErrorEvent, "BAD_DRAWABLE", INT2FIX(BadDrawable));
+  rb_define_const(rb_cXErrorEvent, "BAD_ACCESS", INT2FIX(BadAccess));
+  rb_define_const(rb_cXErrorEvent, "BAD_ALLOC", INT2FIX(BadAlloc));
+  rb_define_const(rb_cXErrorEvent, "BAD_COLOR", INT2FIX(BadColor));
+  rb_define_const(rb_cXErrorEvent, "BAD_GC", INT2FIX(BadGC));
+  rb_define_const(rb_cXErrorEvent, "BAD_ID_CHOICE", INT2FIX(BadIDChoice));
+  rb_define_const(rb_cXErrorEvent, "BAD_NAME", INT2FIX(BadName));
+  rb_define_const(rb_cXErrorEvent, "BAD_LENGTH", INT2FIX(BadLength));
+  rb_define_const(rb_cXErrorEvent, "BAD_IMPLEMENTATION", INT2FIX(BadImplementation));
+  rb_define_const(rb_cXErrorEvent, "FIRST_EXTENSION_ERROR", INT2FIX(FirstExtensionError));
+  rb_define_const(rb_cXErrorEvent, "LAST_EXTENSION_ERROR", INT2FIX(LastExtensionError));
 }

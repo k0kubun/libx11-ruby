@@ -65,6 +65,7 @@ Init_libx11_xevent(void)
   rb_cXEvent = rb_define_class_under(rb_mLibX11, "XEvent", rb_cData);
   rb_define_method(rb_cXEvent, "type", rb_xevent_type, 0);
 
+  // event masks
   rb_define_const(rb_cXEvent, "NO_EVENT_MASK", LONG2NUM(NoEventMask));
   rb_define_const(rb_cXEvent, "KEY_PRESS_MASK", LONG2NUM(KeyPressMask));
   rb_define_const(rb_cXEvent, "KEY_RELEASE_MASK", LONG2NUM(KeyReleaseMask));
@@ -92,6 +93,7 @@ Init_libx11_xevent(void)
   rb_define_const(rb_cXEvent, "COLORMAP_CHANGE_MASK", LONG2NUM(ColormapChangeMask));
   rb_define_const(rb_cXEvent, "OWNER_GRAB_BUTTON_MASK", LONG2NUM(OwnerGrabButtonMask));
 
+  // event
   rb_define_const(rb_cXEvent, "KEY_PRESS", INT2FIX(KeyPress));
   rb_define_const(rb_cXEvent, "KEY_RELEASE", INT2FIX(KeyRelease));
   rb_define_const(rb_cXEvent, "BUTTON_PRESS", INT2FIX(ButtonPress));
