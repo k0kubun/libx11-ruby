@@ -138,6 +138,20 @@ rb_display_xmap_window(VALUE self, VALUE window)
   return INT2NUM(ret);
 }
 
+/*
+ * Xlib XSync
+ */
+static VALUE
+rb_display_xsync(VALUE self, VALUE discard)
+{
+  Display *display;
+  int ret;
+
+  TypedData_Get_Struct(self, Display, &display_type, display);
+  ret = XSync(display, RTEST(discard));
+  return INT2NUM(ret);
+}
+
 void
 Init_libx11_display(void)
 {
@@ -151,4 +165,5 @@ Init_libx11_display(void)
   rb_define_method(rb_cDisplay, "white_pixel", rb_display_white_pixel, 1);
   rb_define_method(rb_cDisplay, "xmap_window", rb_display_xmap_window, 1);
   rb_define_method(rb_cDisplay, "xselect_input", rb_display_xselect_input, 2);
+  rb_define_method(rb_cDisplay, "xsync", rb_display_xsync, 1);
 }
