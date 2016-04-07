@@ -27,12 +27,20 @@ const rb_data_type_t display_type = {
  * Xlib XOpenDisplay
  */
 static VALUE
-rb_libx11_xopen_display(VALUE self, VALUE display_name)
+rb_libx11_xopen_display(int argc, VALUE *argv, RB_UNUSED_VAR(VALUE self))
 {
   Display *display;
-  Check_Type(display_name, T_STRING);
 
-  display = XOpenDisplay(RSTRING_PTR(display_name));
+  if (argc == 0) {
+    display = XOpenDisplay(NULL);
+  } else {
+    VALUE display_name;
+
+    rb_check_arity(argc, 1, 1);
+    rb_scan_args(1, argv, "10", &display_name);
+    Check_Type(display_name, T_STRING);
+    display = XOpenDisplay(RSTRING_PTR(display_name));
+  }
   return TypedData_Wrap_Struct(rb_cDisplay, &display_type, display);
 }
 
@@ -133,7 +141,7 @@ rb_display_xmap_window(VALUE self, VALUE window)
 void
 Init_libx11_display(void)
 {
-  rb_define_singleton_method(rb_mLibX11, "xopen_display", rb_libx11_xopen_display, 1);
+  rb_define_singleton_method(rb_mLibX11, "xopen_display", rb_libx11_xopen_display, -1);
   rb_define_singleton_method(rb_mLibX11, "xclose_display", rb_libx11_xclose_display, 1);
 
   rb_cDisplay = rb_define_class_under(rb_mLibX11, "Display", rb_cData);
