@@ -55,10 +55,19 @@ rb_libx11_xset_error_handler(int argc, VALUE *argv, VALUE self)
   return Qnil;
 }
 
+static VALUE
+rb_xerror_event_type(VALUE self)
+{
+  XErrorEvent *event;
+  TypedData_Get_Struct(self, XErrorEvent, &xerror_event_type, event);
+  return INT2FIX(event->type);
+}
+
 void
 Init_libx11_xerror_event(void)
 {
   rb_define_singleton_method(rb_mLibX11, "xset_error_handler", rb_libx11_xset_error_handler, -1);
 
   rb_cXErrorEvent = rb_define_class_under(rb_mLibX11, "XErrorEvent", rb_cData);
+  rb_define_method(rb_cXErrorEvent, "type", rb_xerror_event_type, 0);
 }
