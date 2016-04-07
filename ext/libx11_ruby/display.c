@@ -37,7 +37,7 @@ rb_libx11_xopen_display(int argc, VALUE *argv, RB_UNUSED_VAR(VALUE self))
     VALUE display_name;
 
     rb_check_arity(argc, 1, 1);
-    rb_scan_args(1, argv, "10", &display_name);
+    rb_scan_args(argc, argv, "10", &display_name);
     Check_Type(display_name, T_STRING);
     display = XOpenDisplay(RSTRING_PTR(display_name));
   }
