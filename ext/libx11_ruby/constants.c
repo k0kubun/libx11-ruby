@@ -4,7 +4,21 @@
 void
 Init_libx11_constants(void)
 {
-  // event masks
+  // reserved resource and constant definitions
+  rb_define_const(rb_mLibX11, "NONE", LONG2NUM(None));
+  rb_define_const(rb_mLibX11, "PARENT_RELATIVE", LONG2NUM(ParentRelative));
+  rb_define_const(rb_mLibX11, "COPY_FROM_PARENT", LONG2NUM(CopyFromParent));
+  rb_define_const(rb_mLibX11, "POINTER_WINDOW", LONG2NUM(PointerWindow));
+  rb_define_const(rb_mLibX11, "INPUT_FOCUS", LONG2NUM(InputFocus));
+  rb_define_const(rb_mLibX11, "POINTER_ROOT", LONG2NUM(PointerRoot));
+  rb_define_const(rb_mLibX11, "ANY_PROPERTY_TYPE", LONG2NUM(AnyPropertyType));
+  rb_define_const(rb_mLibX11, "ANY_KEY", LONG2NUM(AnyKey));
+  rb_define_const(rb_mLibX11, "ANY_BUTTON", LONG2NUM(AnyButton));
+  rb_define_const(rb_mLibX11, "ALL_TEMPORARY", LONG2NUM(AllTemporary));
+  rb_define_const(rb_mLibX11, "CURRENT_TIME", LONG2NUM(CurrentTime));
+  rb_define_const(rb_mLibX11, "NO_SYMBOL", LONG2NUM(NoSymbol));
+
+  // input event masks
   rb_define_const(rb_mLibX11, "NO_EVENT_MASK", LONG2NUM(NoEventMask));
   rb_define_const(rb_mLibX11, "KEY_PRESS_MASK", LONG2NUM(KeyPressMask));
   rb_define_const(rb_mLibX11, "KEY_RELEASE_MASK", LONG2NUM(KeyReleaseMask));
@@ -31,4 +45,12 @@ Init_libx11_constants(void)
   rb_define_const(rb_mLibX11, "PROPERTY_CHANGE_MASK", LONG2NUM(PropertyChangeMask));
   rb_define_const(rb_mLibX11, "COLORMAP_CHANGE_MASK", LONG2NUM(ColormapChangeMask));
   rb_define_const(rb_mLibX11, "OWNER_GRAB_BUTTON_MASK", LONG2NUM(OwnerGrabButtonMask));
+
+  // button masks
+  rb_define_const(rb_mLibX11, "BUTTON1_MASK", LONG2NUM(Button1Mask));
+  rb_define_const(rb_mLibX11, "BUTTON2_MASK", LONG2NUM(Button2Mask));
+  rb_define_const(rb_mLibX11, "BUTTON3_MASK", LONG2NUM(Button3Mask));
+  rb_define_const(rb_mLibX11, "BUTTON4_MASK", LONG2NUM(Button4Mask));
+  rb_define_const(rb_mLibX11, "BUTTON5_MASK", LONG2NUM(Button5Mask));
+  rb_define_const(rb_mLibX11, "ANY_MODIFIER", LONG2NUM(AnyModifier));
 }

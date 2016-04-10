@@ -32,9 +32,9 @@ XServer.with_connection do |display|
 
   XServer.bind_events(
     display, display.default_root_window,
-    LibX11::XEvent::KEY_PRESS_MASK |
-    LibX11::XEvent::SUBSTRUCTURE_REDIRECT_MASK |
-    LibX11::XEvent::SUBSTRUCTURE_NOTIFY_MASK,
+    LibX11::KEY_PRESS_MASK |
+    LibX11::SUBSTRUCTURE_REDIRECT_MASK |
+    LibX11::SUBSTRUCTURE_NOTIFY_MASK,
   )
 
   LibX11.xset_error_handler do |display, error|
