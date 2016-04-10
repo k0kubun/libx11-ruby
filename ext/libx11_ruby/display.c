@@ -165,6 +165,50 @@ rb_display_xsync(VALUE self, VALUE discard)
   return INT2NUM(ret);
 }
 
+/*
+ * Xlib XGrabKey
+ */
+static VALUE
+rb_display_xgrab_key(VALUE self, VALUE keycode, VALUE modifiers, VALUE grab_window,
+    VALUE owner_events, VALUE pointer_mode, VALUE keyboard_mode)
+{
+  Display *display;
+  int ret;
+
+  TypedData_Get_Struct(self, Display, &display_type, display);
+  ret = XGrabKey(display, NUM2INT(keycode), NUM2UINT(modifiers), NUM2ULONG(grab_window),
+      RTEST(owner_events), NUM2INT(pointer_mode), NUM2INT(keyboard_mode));
+  return INT2NUM(ret);
+}
+
+/*
+ * Xlib XUngrabKey
+ */
+static VALUE
+rb_display_xungrab_key(VALUE self, VALUE keycode, VALUE modifiers, VALUE grab_window)
+{
+  Display *display;
+  int ret;
+
+  TypedData_Get_Struct(self, Display, &display_type, display);
+  ret = XUngrabKey(display, NUM2INT(keycode), NUM2UINT(modifiers), NUM2ULONG(grab_window));
+  return INT2NUM(ret);
+}
+
+/*
+ * Xlib XKeysymToKeycode
+ */
+static VALUE
+rb_display_xkeysym_to_keycode(VALUE self, VALUE keysym)
+{
+  Display *display;
+  unsigned char keycode;
+
+  TypedData_Get_Struct(self, Display, &display_type, display);
+  keycode = XKeysymToKeycode(display, NUM2ULONG(keysym));
+  return INT2FIX((int)keycode);
+}
+
 void
 Init_libx11_display(void)
 {
@@ -180,4 +224,7 @@ Init_libx11_display(void)
   rb_define_method(rb_cDisplay, "xmap_window", rb_display_xmap_window, 1);
   rb_define_method(rb_cDisplay, "xselect_input", rb_display_xselect_input, 2);
   rb_define_method(rb_cDisplay, "xsync", rb_display_xsync, 1);
+  rb_define_method(rb_cDisplay, "xgrab_key", rb_display_xgrab_key, 6);
+  rb_define_method(rb_cDisplay, "xungrab_key", rb_display_xungrab_key, 3);
+  rb_define_method(rb_cDisplay, "xkeysym_to_keycode", rb_display_xkeysym_to_keycode, 1);
 }
