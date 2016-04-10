@@ -5,6 +5,7 @@
 
 VALUE rb_mLibX11;
 
+void Init_libx11_constants(void);
 void Init_libx11_display(void);
 void Init_libx11_window(void);
 void Init_libx11_xerror_event(void);

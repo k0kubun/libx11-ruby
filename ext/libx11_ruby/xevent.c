@@ -65,34 +65,6 @@ Init_libx11_xevent(void)
   rb_cXEvent = rb_define_class_under(rb_mLibX11, "XEvent", rb_cData);
   rb_define_method(rb_cXEvent, "type", rb_xevent_type, 0);
 
-  // event masks
-  rb_define_const(rb_cXEvent, "NO_EVENT_MASK", LONG2NUM(NoEventMask));
-  rb_define_const(rb_cXEvent, "KEY_PRESS_MASK", LONG2NUM(KeyPressMask));
-  rb_define_const(rb_cXEvent, "KEY_RELEASE_MASK", LONG2NUM(KeyReleaseMask));
-  rb_define_const(rb_cXEvent, "BUTTON_PRESS_MASK", LONG2NUM(ButtonPressMask));
-  rb_define_const(rb_cXEvent, "BUTTON_RELEASE_MASK", LONG2NUM(ButtonReleaseMask));
-  rb_define_const(rb_cXEvent, "ENTER_WINDOW_MASK", LONG2NUM(EnterWindowMask));
-  rb_define_const(rb_cXEvent, "LEAVE_WINDOW_MASK", LONG2NUM(LeaveWindowMask));
-  rb_define_const(rb_cXEvent, "POINTER_MOTION_MASK", LONG2NUM(PointerMotionMask));
-  rb_define_const(rb_cXEvent, "POINTER_MOTION_HINT_MASK", LONG2NUM(PointerMotionHintMask));
-  rb_define_const(rb_cXEvent, "BUTTON1_MOTION_MASK", LONG2NUM(Button1MotionMask));
-  rb_define_const(rb_cXEvent, "BUTTON2_MOTION_MASK", LONG2NUM(Button2MotionMask));
-  rb_define_const(rb_cXEvent, "BUTTON3_MOTION_MASK", LONG2NUM(Button3MotionMask));
-  rb_define_const(rb_cXEvent, "BUTTON4_MOTION_MASK", LONG2NUM(Button4MotionMask));
-  rb_define_const(rb_cXEvent, "BUTTON5_MOTION_MASK", LONG2NUM(Button5MotionMask));
-  rb_define_const(rb_cXEvent, "BUTTON_MOTION_MASK", LONG2NUM(ButtonMotionMask));
-  rb_define_const(rb_cXEvent, "KEYMAP_STATE_MASK", LONG2NUM(KeymapStateMask));
-  rb_define_const(rb_cXEvent, "EXPOSURE_MASK", LONG2NUM(ExposureMask));
-  rb_define_const(rb_cXEvent, "VISIBILITY_CHANGE_MASK", LONG2NUM(VisibilityChangeMask));
-  rb_define_const(rb_cXEvent, "STRUCTURE_NOTIFY_MASK", LONG2NUM(StructureNotifyMask));
-  rb_define_const(rb_cXEvent, "RESIZE_REDIRECT_MASK", LONG2NUM(ResizeRedirectMask));
-  rb_define_const(rb_cXEvent, "SUBSTRUCTURE_NOTIFY_MASK", LONG2NUM(SubstructureNotifyMask));
-  rb_define_const(rb_cXEvent, "SUBSTRUCTURE_REDIRECT_MASK", LONG2NUM(SubstructureRedirectMask));
-  rb_define_const(rb_cXEvent, "FOCUS_CHANGE_MASK", LONG2NUM(FocusChangeMask));
-  rb_define_const(rb_cXEvent, "PROPERTY_CHANGE_MASK", LONG2NUM(PropertyChangeMask));
-  rb_define_const(rb_cXEvent, "COLORMAP_CHANGE_MASK", LONG2NUM(ColormapChangeMask));
-  rb_define_const(rb_cXEvent, "OWNER_GRAB_BUTTON_MASK", LONG2NUM(OwnerGrabButtonMask));
-
   // event
   rb_define_const(rb_cXEvent, "KEY_PRESS", INT2FIX(KeyPress));
   rb_define_const(rb_cXEvent, "KEY_RELEASE", INT2FIX(KeyRelease));
