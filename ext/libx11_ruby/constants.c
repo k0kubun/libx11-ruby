@@ -165,4 +165,8 @@ Init_libx11_constants(void)
   rb_define_const(rb_mLibX11, "XK_bar", LONG2NUM(XK_bar));
   rb_define_const(rb_mLibX11, "XK_braceright", LONG2NUM(XK_braceright));
   rb_define_const(rb_mLibX11, "XK_asciitilde", LONG2NUM(XK_asciitilde));
+
+  // GrabPointer, GrabButton, GrabKeyboard, GrabKey Modes
+  rb_define_const(rb_mLibX11, "GRAB_MODE_SYNC", INT2FIX(GrabModeSync));
+  rb_define_const(rb_mLibX11, "GRAB_MODE_ASYNC", INT2FIX(GrabModeAsync));
 }
