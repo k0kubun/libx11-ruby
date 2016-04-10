@@ -209,6 +209,24 @@ rb_display_xkeysym_to_keycode(VALUE self, VALUE keysym)
   return INT2FIX((int)keycode);
 }
 
+/*
+ * KeySym XKeycodeToKeysym(
+ *   Display* display,
+ *   KeyCode  keycode,
+ *   int      index,
+ * );
+ */
+static VALUE
+rb_display_xkeycode_to_keysym(VALUE self, VALUE keycode, VALUE index)
+{
+  unsigned long keysym;
+  Display *display;
+
+  TypedData_Get_Struct(self, Display, &display_type, display);
+  keysym = XKeycodeToKeysym(display, (unsigned char)NUM2INT(keycode), NUM2INT(index));
+  return ULONG2NUM(keysym);
+}
+
 void
 Init_libx11_display(void)
 {
@@ -227,4 +245,5 @@ Init_libx11_display(void)
   rb_define_method(rb_cDisplay, "xgrab_key", rb_display_xgrab_key, 6);
   rb_define_method(rb_cDisplay, "xungrab_key", rb_display_xungrab_key, 3);
   rb_define_method(rb_cDisplay, "xkeysym_to_keycode", rb_display_xkeysym_to_keycode, 1);
+  rb_define_method(rb_cDisplay, "xkeycode_to_keysym", rb_display_xkeycode_to_keysym, 2);
 }
