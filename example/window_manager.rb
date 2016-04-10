@@ -5,7 +5,7 @@ class XServer
     display = LibX11.xopen_display
     yield(display)
   ensure
-    LibX11.xclose_display(display)
+    LibX11.xclose_display(display) if display
   end
 
   def self.bind_events(display, window, event_mask)

@@ -41,6 +41,7 @@ rb_libx11_xopen_display(int argc, VALUE *argv, RB_UNUSED_VAR(VALUE self))
     Check_Type(display_name, T_STRING);
     display = XOpenDisplay(RSTRING_PTR(display_name));
   }
+  if (display == NULL) return Qnil;
   return TypedData_Wrap_Struct(rb_cDisplay, &display_type, display);
 }
 
