@@ -57,10 +57,28 @@ rb_xevent_type(VALUE self)
   return INT2NUM(event->type);
 }
 
+/*
+ * KeySym XLookupKeysym(
+ *   XKeyEvent* key_event,
+ *   int        index
+ * );
+ */
+static VALUE
+rb_libx11_xlookup_keysym(VALUE self, VALUE event_obj, VALUE index)
+{
+  XEvent *event;
+  unsigned long keysym;
+
+  TypedData_Get_Struct(event_obj, XEvent, &xevent_type, event);
+  keysym = XLookupKeysym(&event->xkey, NUM2INT(index));
+  return ULONG2NUM(keysym);
+}
+
 void
 Init_libx11_xevent(void)
 {
   rb_define_singleton_method(rb_mLibX11, "xnext_event", rb_libx11_xnext_event, 1);
+  rb_define_singleton_method(rb_mLibX11, "xlookup_keysym", rb_libx11_xlookup_keysym, 2);
 
   rb_cXEvent = rb_define_class_under(rb_mLibX11, "XEvent", rb_cData);
   rb_define_method(rb_cXEvent, "type", rb_xevent_type, 0);
