@@ -26,6 +26,10 @@ class XServer
 end
 
 XServer.with_connection do |display|
+  if display.nil?
+    abort 'Failed to connect to X server.'
+  end
+
   XServer.bind_events(
     display, display.default_root_window,
     LibX11::XEvent::KEY_PRESS_MASK |
