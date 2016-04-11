@@ -72,6 +72,18 @@ rb_display_default_screen(VALUE self)
 }
 
 /*
+ * #define ConnectionNumber(dpy) (((_XPrivDisplay)dpy)->fd)
+ */
+static VALUE
+rb_display_connection_number(VALUE self)
+{
+  Display *display;
+
+  TypedData_Get_Struct(self, Display, &display_type, display);
+  return INT2NUM(ConnectionNumber(display));
+}
+
+/*
  * Xlib XDisplayString
  */
 static VALUE
@@ -218,6 +230,7 @@ Init_libx11_display(void)
   rb_cDisplay = rb_define_class_under(rb_mLibX11, "Display", rb_cData);
   rb_define_method(rb_cDisplay, "default_root_window", rb_display_default_root_window, 0);
   rb_define_method(rb_cDisplay, "default_screen", rb_display_default_screen, 0);
+  rb_define_method(rb_cDisplay, "connection_number", rb_display_connection_number, 0);
   rb_define_method(rb_cDisplay, "xdisplay_string", rb_display_xdisplay_string, 0);
   rb_define_method(rb_cDisplay, "black_pixel", rb_display_black_pixel, 1);
   rb_define_method(rb_cDisplay, "white_pixel", rb_display_white_pixel, 1);
