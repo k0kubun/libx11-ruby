@@ -1,7 +1,7 @@
 #include "libx11_ruby.h"
 #include <X11/Xlib.h>
 
-extern rb_data_type_t display_type;
+extern Display* get_display_struct(VALUE);
 
 /*
  * Xlib XCreateSimpleWindow
@@ -10,11 +10,7 @@ static VALUE
 rb_libx11_xcreate_simple_window(VALUE self, VALUE display_obj, VALUE parent_window, VALUE x, VALUE y,
     VALUE width, VALUE height, VALUE border_width, VALUE border_color, VALUE background_color)
 {
-  Display *display;
-  Window ret;
-
-  TypedData_Get_Struct(display_obj, Display, &display_type, display);
-  ret = XCreateSimpleWindow(display, NUM2ULONG(parent_window), NUM2INT(x), NUM2INT(y),
+  Window ret = XCreateSimpleWindow(get_display_struct(display_obj), NUM2ULONG(parent_window), NUM2INT(x), NUM2INT(y),
       NUM2UINT(width), NUM2UINT(height), FIX2UINT(border_width), NUM2ULONG(border_color), NUM2ULONG(background_color));
   return ULONG2NUM(ret);
 }
@@ -25,11 +21,7 @@ rb_libx11_xcreate_simple_window(VALUE self, VALUE display_obj, VALUE parent_wind
 static VALUE
 rb_libx11_xdestroy_window(VALUE self, VALUE display_obj, VALUE window)
 {
-  Display *display;
-  int ret;
-
-  TypedData_Get_Struct(display_obj, Display, &display_type, display);
-  ret = XDestroyWindow(display, NUM2ULONG(window));
+  int ret = XDestroyWindow(get_display_struct(display_obj), NUM2ULONG(window));
   return INT2NUM(ret);
 }
 

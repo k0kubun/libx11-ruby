@@ -23,6 +23,14 @@ const rb_data_type_t display_type = {
   .flags = RUBY_TYPED_FREE_IMMEDIATELY,
 };
 
+Display*
+get_display_struct(VALUE display_object)
+{
+  Display *display;
+  TypedData_Get_Struct(display_object, Display, &display_type, display);
+  return display;
+}
+
 /*
  * Xlib XOpenDisplay
  */
@@ -51,12 +59,7 @@ rb_libx11_xopen_display(int argc, VALUE *argv, RB_UNUSED_VAR(VALUE self))
 static VALUE
 rb_libx11_xclose_display(VALUE self, VALUE obj)
 {
-  int ret;
-  Display *display;
-
-  TypedData_Get_Struct(obj, Display, &display_type, display);
-  ret = XCloseDisplay(display);
-  return INT2FIX(ret);
+  return INT2FIX(XCloseDisplay(get_display_struct(obj)));
 }
 
 /*
@@ -65,10 +68,7 @@ rb_libx11_xclose_display(VALUE self, VALUE obj)
 static VALUE
 rb_display_default_screen(VALUE self)
 {
-  Display *display;
-
-  TypedData_Get_Struct(self, Display, &display_type, display);
-  return INT2NUM(DefaultScreen(display));
+  return INT2NUM(DefaultScreen(get_display_struct(self)));
 }
 
 /*
@@ -77,10 +77,7 @@ rb_display_default_screen(VALUE self)
 static VALUE
 rb_display_connection_number(VALUE self)
 {
-  Display *display;
-
-  TypedData_Get_Struct(self, Display, &display_type, display);
-  return INT2NUM(ConnectionNumber(display));
+  return INT2NUM(ConnectionNumber(get_display_struct(self)));
 }
 
 /*
@@ -89,10 +86,7 @@ rb_display_connection_number(VALUE self)
 static VALUE
 rb_display_xdisplay_string(VALUE self)
 {
-  Display *display;
-
-  TypedData_Get_Struct(self, Display, &display_type, display);
-  return rb_str_new_cstr(XDisplayString(display));
+  return rb_str_new_cstr(XDisplayString(get_display_struct(self)));
 }
 
 /*
@@ -101,12 +95,7 @@ rb_display_xdisplay_string(VALUE self)
 static VALUE
 rb_display_default_root_window(VALUE self)
 {
-  Display *display;
-  Window window;
-
-  TypedData_Get_Struct(self, Display, &display_type, display);
-  window = DefaultRootWindow(display);
-  return ULONG2NUM(window);
+  return ULONG2NUM(DefaultRootWindow(get_display_struct(self)));
 }
 
 /*
@@ -115,11 +104,7 @@ rb_display_default_root_window(VALUE self)
 static VALUE
 rb_display_black_pixel(VALUE self, VALUE screen_obj)
 {
-  Display *display;
-  int screen = FIX2INT(screen_obj);
-
-  TypedData_Get_Struct(self, Display, &display_type, display);
-  return ULONG2NUM(BlackPixel(display, screen));
+  return ULONG2NUM(BlackPixel(get_display_struct(self), FIX2INT(screen_obj)));
 }
 
 /*
@@ -128,11 +113,7 @@ rb_display_black_pixel(VALUE self, VALUE screen_obj)
 static VALUE
 rb_display_white_pixel(VALUE self, VALUE screen_obj)
 {
-  Display *display;
-  int screen = FIX2INT(screen_obj);
-
-  TypedData_Get_Struct(self, Display, &display_type, display);
-  return ULONG2NUM(WhitePixel(display, screen));
+  return ULONG2NUM(WhitePixel(get_display_struct(self), FIX2INT(screen_obj)));
 }
 
 /*
@@ -141,12 +122,7 @@ rb_display_white_pixel(VALUE self, VALUE screen_obj)
 static VALUE
 rb_display_xselect_input(VALUE self, VALUE window, VALUE event_mask)
 {
-  Display *display;
-  int ret;
-
-  TypedData_Get_Struct(self, Display, &display_type, display);
-  ret = XSelectInput(display, NUM2ULONG(window), NUM2LONG(event_mask));
-  return INT2NUM(ret);
+  return INT2NUM(XSelectInput(get_display_struct(self), NUM2ULONG(window), NUM2LONG(event_mask)));
 }
 
 /*
@@ -155,12 +131,7 @@ rb_display_xselect_input(VALUE self, VALUE window, VALUE event_mask)
 static VALUE
 rb_display_xmap_window(VALUE self, VALUE window)
 {
-  Display *display;
-  int ret;
-
-  TypedData_Get_Struct(self, Display, &display_type, display);
-  ret = XMapWindow(display, NUM2ULONG(window));
-  return INT2NUM(ret);
+  return INT2NUM(XMapWindow(get_display_struct(self), NUM2ULONG(window)));
 }
 
 /*
@@ -169,12 +140,7 @@ rb_display_xmap_window(VALUE self, VALUE window)
 static VALUE
 rb_display_xsync(VALUE self, VALUE discard)
 {
-  Display *display;
-  int ret;
-
-  TypedData_Get_Struct(self, Display, &display_type, display);
-  ret = XSync(display, RTEST(discard));
-  return INT2NUM(ret);
+  return INT2NUM(XSync(get_display_struct(self), RTEST(discard)));
 }
 
 /*
@@ -184,11 +150,7 @@ static VALUE
 rb_display_xgrab_key(VALUE self, VALUE keycode, VALUE modifiers, VALUE grab_window,
     VALUE owner_events, VALUE pointer_mode, VALUE keyboard_mode)
 {
-  Display *display;
-  int ret;
-
-  TypedData_Get_Struct(self, Display, &display_type, display);
-  ret = XGrabKey(display, NUM2INT(keycode), NUM2UINT(modifiers), NUM2ULONG(grab_window),
+  int ret = XGrabKey(get_display_struct(self), NUM2INT(keycode), NUM2UINT(modifiers), NUM2ULONG(grab_window),
       RTEST(owner_events), NUM2INT(pointer_mode), NUM2INT(keyboard_mode));
   return INT2NUM(ret);
 }
@@ -199,11 +161,7 @@ rb_display_xgrab_key(VALUE self, VALUE keycode, VALUE modifiers, VALUE grab_wind
 static VALUE
 rb_display_xungrab_key(VALUE self, VALUE keycode, VALUE modifiers, VALUE grab_window)
 {
-  Display *display;
-  int ret;
-
-  TypedData_Get_Struct(self, Display, &display_type, display);
-  ret = XUngrabKey(display, NUM2INT(keycode), NUM2UINT(modifiers), NUM2ULONG(grab_window));
+  int ret = XUngrabKey(get_display_struct(self), NUM2INT(keycode), NUM2UINT(modifiers), NUM2ULONG(grab_window));
   return INT2NUM(ret);
 }
 
@@ -213,11 +171,7 @@ rb_display_xungrab_key(VALUE self, VALUE keycode, VALUE modifiers, VALUE grab_wi
 static VALUE
 rb_display_xkeysym_to_keycode(VALUE self, VALUE keysym)
 {
-  Display *display;
-  unsigned char keycode;
-
-  TypedData_Get_Struct(self, Display, &display_type, display);
-  keycode = XKeysymToKeycode(display, NUM2ULONG(keysym));
+  unsigned char keycode = XKeysymToKeycode(get_display_struct(self), NUM2ULONG(keysym));
   return INT2FIX((int)keycode);
 }
 

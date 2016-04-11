@@ -3,7 +3,7 @@
 
 VALUE rb_cXEvent;
 
-extern rb_data_type_t display_type;
+extern Display* get_display_struct(VALUE);
 
 static void
 xevent_dfree(void *arg)
@@ -38,13 +38,8 @@ const rb_data_type_t xevent_type = {
 static VALUE
 rb_libx11_xnext_event(VALUE self, VALUE obj)
 {
-  Display *display;
-  XEvent *event;
-
-  TypedData_Get_Struct(obj, Display, &display_type, display);
-
-  event = (XEvent *)malloc(sizeof(XEvent));
-  XNextEvent(display, event);
+  XEvent *event = (XEvent *)malloc(sizeof(XEvent));
+  XNextEvent(get_display_struct(obj), event);
   return TypedData_Wrap_Struct(rb_cXEvent, &xevent_type, event);
 }
 
