@@ -169,4 +169,14 @@ Init_libx11_constants(void)
   // GrabPointer, GrabButton, GrabKeyboard, GrabKey Modes
   rb_define_const(rb_mLibX11, "GRAB_MODE_SYNC", INT2FIX(GrabModeSync));
   rb_define_const(rb_mLibX11, "GRAB_MODE_ASYNC", INT2FIX(GrabModeAsync));
+
+  // Key masks
+  rb_define_const(rb_mLibX11, "SHIFT_MASK", LONG2NUM(ShiftMask));
+  rb_define_const(rb_mLibX11, "LOCK_MASK", LONG2NUM(LockMask));
+  rb_define_const(rb_mLibX11, "CONTROL_MASK", LONG2NUM(ControlMask));
+  rb_define_const(rb_mLibX11, "MOD1_MASK", LONG2NUM(Mod1Mask));
+  rb_define_const(rb_mLibX11, "MOD2_MASK", LONG2NUM(Mod2Mask));
+  rb_define_const(rb_mLibX11, "MOD3_MASK", LONG2NUM(Mod3Mask));
+  rb_define_const(rb_mLibX11, "MOD4_MASK", LONG2NUM(Mod4Mask));
+  rb_define_const(rb_mLibX11, "MOD5_MASK", LONG2NUM(Mod5Mask));
 }
