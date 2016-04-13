@@ -1,7 +1,7 @@
 #include "libx11_ruby.h"
 #include <X11/Xlib.h>
 
-VALUE rb_cXEvent;
+VALUE rb_cXEvent, rb_cXKeyEvent;
 
 extern Display* get_display_struct(VALUE);
 
@@ -40,7 +40,12 @@ rb_libx11_xnext_event(VALUE self, VALUE obj)
 {
   XEvent *event = (XEvent *)malloc(sizeof(XEvent));
   XNextEvent(get_display_struct(obj), event);
-  return TypedData_Wrap_Struct(rb_cXEvent, &xevent_type, event);
+  switch (event->type) {
+    case KeyPress:
+      return TypedData_Wrap_Struct(rb_cXKeyEvent, &xevent_type, event);
+    default:
+      return TypedData_Wrap_Struct(rb_cXEvent, &xevent_type, event);
+  }
 }
 
 static VALUE
@@ -50,6 +55,15 @@ rb_xevent_type(VALUE self)
 
   TypedData_Get_Struct(self, XEvent, &xevent_type, event);
   return INT2NUM(event->type);
+}
+
+static VALUE
+rb_xkey_event_state(VALUE self)
+{
+  XEvent *event;
+
+  TypedData_Get_Struct(self, XEvent, &xevent_type, event);
+  return UINT2NUM(event->xkey.state);
 }
 
 /*
@@ -77,6 +91,9 @@ Init_libx11_xevent(void)
 
   rb_cXEvent = rb_define_class_under(rb_mLibX11, "XEvent", rb_cData);
   rb_define_method(rb_cXEvent, "type", rb_xevent_type, 0);
+
+  rb_cXKeyEvent = rb_define_class_under(rb_mLibX11, "XKeyEvent", rb_cXEvent);
+  rb_define_method(rb_cXKeyEvent, "state", rb_xkey_event_state, 0);
 
   // event
   rb_define_const(rb_cXEvent, "KEY_PRESS", INT2FIX(KeyPress));
