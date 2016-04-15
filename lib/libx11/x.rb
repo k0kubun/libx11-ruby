@@ -1,8 +1,8 @@
 module LibX11
   module X
-    #****************************************************************
+    #***************************************************************
     # EVENT DEFINITIONS
-    #****************************************************************
+    #***************************************************************
 
     # Input Event Masks. Used as event-mask window attribute and as arguments
     # to Grab requests.  Not to be confused with event names.
@@ -59,5 +59,31 @@ module LibX11
     MapRequest       = 20
     ReparentNotify   = 21
     ConfigureNotify  = 22
+
+    #****************************************************************
+    # ERROR CODES
+    #****************************************************************
+
+    Success           = 0
+    BadRequest        = 1
+    BadValue          = 2
+    BadWindow         = 3
+    BadPixmap         = 4
+    BadAtom           = 5
+    BadCursor         = 6
+    BadFont           = 7
+    BadMatch          = 8
+    BadDrawable       = 9
+    BadAccess         = 10
+    BadAlloc          = 11
+    BadColor          = 12
+    BadGC             = 13
+    BadIDChoice       = 14
+    BadName           = 15
+    BadLength         = 16
+    BadImplementation = 17
+
+    FirstExtensionError = 128
+    LastExtensionError  = 255
   end
 end
