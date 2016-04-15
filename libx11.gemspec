@@ -5,7 +5,7 @@ require 'libx11/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "libx11"
-  spec.version       = Libx11::VERSION
+  spec.version       = LibX11::VERSION
   spec.authors       = ["Takashi Kokubun"]
   spec.email         = ["takashikkbn@gmail.com"]
 
