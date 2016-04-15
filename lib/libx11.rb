@@ -1,1 +1,2 @@
-require 'libx11/version'
+require 'ffi'
+require 'libx11/xlib'
