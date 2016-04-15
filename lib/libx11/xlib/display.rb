@@ -45,7 +45,7 @@ module LibX11
         :private17,           :pointer,
         :private18,           :pointer,
         :private19,           :int,
-        :xdefaults,           :string
+        :xdefaults,           :string,
       )
     end
   end
