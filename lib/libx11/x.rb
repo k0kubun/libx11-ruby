@@ -1,5 +1,23 @@
 module LibX11
   module X
+    #****************************************************************
+    # RESERVED RESOURCE AND CONSTANT DEFINITIONS
+    #****************************************************************
+
+    None            = 0 # universal null resource or null atom
+    ParentRelative  = 1 # background pixmap in CreateWindow and ChangeWindowAttributes
+    CopyFromParent  = 0 # border pixmap in CreateWindow and ChangeWindowAttributes special
+                        # VisualID and special window class passed to CreateWindow
+    PointerWindow   = 0 # destination window in SendEvent
+    InputFocus      = 1 # destination window in SendEvent
+    PointerRoot     = 1 # focus window in SetInputFocus
+    AnyPropertyType = 0 # special Atom, passed to GetProperty
+    AnyKey          = 0 # special Key Code, passed to GrabKey
+    AnyButton       = 0 # special Button Code, passed to GrabButton
+    AllTemporary    = 0 # special Resource ID passed to KillClient
+    CurrentTime     = 0 # special Time
+    NoSymbol        = 0 # special KeySym
+
     #***************************************************************
     # EVENT DEFINITIONS
     #***************************************************************
@@ -59,6 +77,47 @@ module LibX11
     MapRequest       = 20
     ReparentNotify   = 21
     ConfigureNotify  = 22
+    ConfigureRequest = 23
+    GravityNotify    = 24
+    ResizeRequest    = 25
+    CirculateNotify  = 26
+    CirculateRequest = 27
+    PropertyNotify   = 28
+    SelectionClear   = 29
+    SelectionRequest = 30
+    SelectionNotify  = 31
+    ColormapNotify   = 32
+    ClientMessage    = 33
+    MappingNotify    = 34
+    GenericEvent     = 35
+    LASTEvent        = 36
+
+    # Key masks. Used as modifiers to GrabButton and GrabKey, results of QueryPointer,
+    # state in various key-, mouse-, and button-related events.
+
+    ShiftMask   = (1<<0)
+    LockMask    = (1<<1)
+    ControlMask = (1<<2)
+    Mod1Mask    = (1<<3)
+    Mod2Mask    = (1<<4)
+    Mod3Mask    = (1<<5)
+    Mod4Mask    = (1<<6)
+    Mod5Mask    = (1<<7)
+
+    # button masks.  Used in same manner as Key masks above. Not to be confused
+    # with button names below.
+
+    Button1Mask = (1<<8)
+    Button2Mask = (1<<9)
+    Button3Mask = (1<<10)
+    Button4Mask = (1<<11)
+    Button5Mask = (1<<12)
+    AnyModifier = (1<<15)
+
+    # GrabPointer, GrabButton, GrabKeyboard, GrabKey Modes
+
+    GrabModeSync  = 0
+    GrabModeAsync = 1
 
     #****************************************************************
     # ERROR CODES
