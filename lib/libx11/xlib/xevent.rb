@@ -34,7 +34,7 @@ require 'libx11/xlib/xvisibility_event'
 
 module LibX11
   module Xlib
-    class XEvent < FFI::Struct
+    class XEvent < FFI::Union
       layout(
         :type,              :int,
         :xany,              XAnyEvent,
