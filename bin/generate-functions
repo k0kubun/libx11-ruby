@@ -1,0 +1,100 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'strscan'
+
+target = ARGV[0]
+abort "'#{target}' does not exist" unless File.exist?(target)
+
+source = File.read(target)
+decls  = source.scan(/extern [^\n]+ [^ ]+ ?\([^\(\)]+\);/m)
+
+class FFIGenerator
+  BLOCKING_FUNCTIONS = %w[XSync XNextEvent]
+
+  def initialize(decls)
+    @decls = decls
+  end
+
+  def print_ffi
+    @decls.each do |decl|
+      puts ffi_by_decl(decl)
+    end
+  end
+
+  private
+
+  def preprocess(decl)
+    decl.gsub(/#if NeedWidePrototypes\n[^\n]+\n#else\n([^\n]+)\n#endif\n/m, '\1' << "\n")
+  end
+
+  def ffi_by_decl(decl)
+    if decl == 'extern Bool XSupportsLocale (void);'
+      return 'attach_function :XSupportsLocale, [], :bool'
+    end
+
+    definition, *params = preprocess(decl).split("\n")
+    params.delete_at(-1)
+    _, type, _, func = definition.match(/\Aextern ((unsigned )?[^ ]+ \**)([^ ]+) ?\(\z/).to_a
+
+    param_syms = params.map { |param| typesym(param_to_type(param))}
+    param_syms = [] if param_syms == [':void']
+
+    ffi = "attach_function :#{func}, [#{param_syms.join(', ')}], #{typesym(type.strip)}"
+    ffi.concat(', blocking: true') if BLOCKING_FUNCTIONS.include?(func)
+    ffi
+  rescue => e
+    puts
+    puts e.backtrace.join("\n")
+    abort "Failed to parse!:\n\n#{decl}\n\n#{e.message}"
+  end
+
+  def typesym(type)
+    type = type.gsub(/ \*\z/, '*').gsub(/ \*\*\z/, '**')
+    case type
+    when 'Display*', 'XKeyEvent*', 'XEvent*', 'XMappingEvent*', 'XKeyPressedEvent*',
+      'XGenericEventCookie*'
+      type.sub(/ ?\*\z/, '').concat('.ptr')
+    when 'XFontStruct*', 'XTimeCoord*', 'XModifierKeymap*', 'Visual*', 'XImage*',
+      'XColor*', 'XGCValues*', 'XSetWindowAttributes*', 'XHostAddress*', 'Screen*',
+      'XExtCodes*', 'XExtData*', 'XPixmapFormatValues*', 'XWindowChanges*',
+      'XKeyboardControl*', 'XArc*', 'XChar2b*', 'XPoint*', 'XRectangle*', 'XSegment*',
+      'XTextItem*', 'XTextItem16*', 'XKeyboardState*', 'XWindowAttributes*',
+      'XCharStruct*', 'XOM', 'XOC', 'XFontSet', 'XFontSetExtents*',
+      'XmbTextItem*', 'XwcTextItem*', 'XIM', 'XIC'
+      ':pointer'
+    when 'XID', 'Window', 'Time', 'KeyCode', 'int', 'Status', 'Drawable', 'void', 'Atom',
+      'KeySym', 'Colormap', 'Pixmap', 'Cursor', 'Font', 'GC', 'GContext', 'long',
+      'VisualID', 'XPointer', 'XIDProc', 'XConnectionWatchProc', 'XErrorHandler',
+      'XIOErrorHandler'
+      ":#{type}"
+    when 'char*', 'const char*'
+      ':string'
+    when 'int*', 'Atom*', 'char**', 'Colormap*', 'XFontStruct**', 'Bool*', 'KeySym*',
+      'char **', 'XExtData**', 'Atom**', 'char***', 'Window**', 'Window*', 'struct _XExtData**',
+      'unsigned long*', 'unsigned char*', 'void*', 'unsigned int*', 'unsigned char**', 'Pixmap*',
+      'struct _XrmHashBucketRec*', 'XFontStruct***', 'wchar_t*', 'Status*', 'int**', 'wchar_t'
+      ':pointer'
+    when 'unsigned int'
+      ':uint'
+    when 'unsigned long'
+      ':ulong'
+    when 'Bool'
+      ':bool'
+    when 'XEDataObject'
+      'XEDataObject.by_value'
+    when 'char [32]'
+      '[:char, 32]'
+    else
+      raise "Unprocessible type name: '#{type}'"
+    end
+  end
+
+  def param_to_type(param)
+    s = StringScanner.new(param)
+    s.scan(/ +/)
+    s.scan_until(/(,|\/\*|\z)/).sub(/(,|\/\*)/, '').sub(/ ?_Xconst ?/, '').strip
+  end
+end
+
+FFIGenerator.new(decls).print_ffi
