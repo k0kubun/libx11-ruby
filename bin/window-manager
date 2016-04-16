@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+
+# Write this to ~/.xinitrc and execute `startx`. (Don't execute this directly!)
+# `exec /path/to/libx11-ruby/bin/window-manager`
+
+Dir.chdir(File.expand_path('../', __dir__)) do
+  exec('bundle', 'exec', 'ruby', 'example/window_manager.rb')
+end
