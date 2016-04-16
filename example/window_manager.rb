@@ -2,25 +2,28 @@ require 'libx11'
 
 class XServer
   def self.with_connection
-    display = LibX11.xopen_display
+    display = LibX11::Xlib.XOpenDisplay(nil)
     yield(display)
   ensure
-    LibX11.xclose_display(display) if display
+    LibX11::Xlib.XCloseDisplay(display) if display
   end
 
   def self.bind_events(display, window, event_mask)
     wm_detected = false
-    LibX11.xset_error_handler do |display, error|
-      if error.error_code == LibX11::XErrorEvent::BAD_ACCESS
-        wm_detected = true
+    LibX11::Xlib.XSetErrorHandler(
+      FFI::Function.new(:int, [LibX11::Xlib::Display.ptr, LibX11::Xlib::XErrorEvent.ptr]) do |display, error|
+        if error[:error_code] == LibX11::X::BadAccess
+          wm_detected = true
+        end
+        0
       end
-    end
+    )
 
-    display.xselect_input(window, event_mask)
-    display.xsync(false)
+    LibX11::Xlib.XSelectInput(display, window, event_mask)
+    LibX11::Xlib.XSync(display, 0)
 
     if wm_detected
-      abort "Another window manager detected!\n#{display.xdisplay_string}"
+      abort 'Another window manager detected!'
     end
   end
 end
@@ -31,26 +34,31 @@ XServer.with_connection do |display|
   end
 
   XServer.bind_events(
-    display, display.default_root_window,
-    LibX11::KEY_PRESS_MASK |
-    LibX11::SUBSTRUCTURE_REDIRECT_MASK |
-    LibX11::SUBSTRUCTURE_NOTIFY_MASK,
+    display, LibX11::Xlib.XDefaultRootWindow(display),
+    LibX11::X::KeyPressMask |
+    LibX11::X::SubstructureRedirectMask |
+    LibX11::X::SubstructureNotifyMask,
   )
 
-  LibX11.xset_error_handler do |display, error|
-    $stderr.puts "Error detected: (error_code=#{error.error_code})"
-  end
+  LibX11::Xlib.XSetErrorHandler(
+    FFI::Function.new(:int, [LibX11::Xlib::Display.ptr, LibX11::Xlib::XErrorEvent.ptr]) do |display, error|
+      $stderr.puts "Error detected: (error_code=#{error[:error_code]})"
+      0
+    end
+  )
 
   loop do
-    event = LibX11.xnext_event(display)
-    case event.type
-    when LibX11::XEvent::CREATE_NOTIFY
+    event = LibX11::Xlib::XEvent.new
+    LibX11::Xlib.XNextEvent(display, event)
+
+    case event[:type]
+    when LibX11::X::CreateNotify
       # hook creation
-    when LibX11::XEvent::DESTROY_NOTIFY
+    when LibX11::X::DestroyNotify
       # hook destruction
-    when LibX11::XEvent::REPARENT_NOTIFY
+    when LibX11::X::ReparentNotify
       # hook reparenting
-    when LibX11::XEvent::KEY_PRESS
+    when LibX11::X::KeyPress
       break
     end
   end

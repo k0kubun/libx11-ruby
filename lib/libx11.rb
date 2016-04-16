@@ -1,2 +1,4 @@
-require 'libx11/version'
-require 'libx11/libx11_ruby'
+require 'ffi'
+require 'libx11/keysymdef'
+require 'libx11/x'
+require 'libx11/xlib'
