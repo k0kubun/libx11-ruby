@@ -18,7 +18,7 @@ class XServer
     end
 
     LibX11::Xlib.XSelectInput(display, window, event_mask)
-    LibX11::Xlib.XSync(display, 0)
+    LibX11::Xlib.XSync(display, false)
 
     if wm_detected
       abort 'Another window manager detected!'

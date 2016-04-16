@@ -31,12 +31,12 @@ module LibX11
     attach_function :XConnectionNumber,   [Display.ptr], :int
     attach_function :XDefaultScreen,      [Display.ptr], :int
     attach_function :XDestroyWindow,      [Display.ptr, :Window], :int
-    attach_function :XGrabKey,            [Display.ptr, :int, :uint, :Window, :Bool, :int, :int], :int
+    attach_function :XGrabKey,            [Display.ptr, :int, :uint, :Window, :bool, :int, :int], :int
     attach_function :XKeysymToKeycode,    [Display.ptr, :KeySym], :KeyCode
     attach_function :XMapWindow,          [Display.ptr, :Window], :int
     attach_function :XNextEvent,          [Display.ptr, XEvent.ptr], :int, blocking: true
     attach_function :XSelectInput,        [Display.ptr, :Window, :long], :int
-    attach_function :XSync,               [Display.ptr, :Bool], :int, blocking: true
+    attach_function :XSync,               [Display.ptr, :bool], :int, blocking: true
     attach_function :XUngrabKey,          [Display.ptr, :int, :uint, :Window], :int
   end
 end
