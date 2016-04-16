@@ -23,6 +23,7 @@ module LibX11
     typedef :XID,    :Window
 
     require 'libx11/xlib/display'
+    require 'libx11/xlib/xedata_object'
     require 'libx11/xlib/xevent'
 
     callback :XConnectionWatchProc, [Display.ptr, :XPointer, :int, :bool, :pointer], :void
@@ -276,7 +277,7 @@ module LibX11
     attach_function :XQueryColor, [Display.ptr, :Colormap, :pointer], :int
     attach_function :XQueryColors, [Display.ptr, :Colormap, :pointer, :int], :int
     attach_function :XQueryExtension, [Display.ptr, :string, :pointer, :pointer, :pointer], :bool
-    attach_function :XQueryKeymap, [Display.ptr, [:char, 32]], :int
+    attach_function :XQueryKeymap, [Display.ptr, :pointer], :int
     attach_function :XQueryPointer, [Display.ptr, :Window, :pointer, :pointer, :pointer, :pointer, :pointer, :pointer, :pointer], :bool
     attach_function :XQueryTextExtents, [Display.ptr, :XID, :string, :int, :pointer, :pointer, :pointer, :pointer], :int
     attach_function :XQueryTextExtents16, [Display.ptr, :XID, :pointer, :int, :pointer, :pointer, :pointer, :pointer], :int
@@ -409,9 +410,9 @@ module LibX11
     attach_function :Xutf8ResetIC, [:pointer], :string
     attach_function :XIMOfIC, [:pointer], :pointer
     attach_function :XFilterEvent, [XEvent.ptr, :Window], :bool
-    attach_function :XmbLookupString, [:pointer, XKeyPressedEvent.ptr, :string, :int, :pointer, :pointer], :int
-    attach_function :XwcLookupString, [:pointer, XKeyPressedEvent.ptr, :pointer, :int, :pointer, :pointer], :int
-    attach_function :Xutf8LookupString, [:pointer, XKeyPressedEvent.ptr, :string, :int, :pointer, :pointer], :int
+    attach_function :XmbLookupString, [:pointer, :pointer, :string, :int, :pointer, :pointer], :int
+    attach_function :XwcLookupString, [:pointer, :pointer, :pointer, :int, :pointer, :pointer], :int
+    attach_function :Xutf8LookupString, [:pointer, :pointer, :string, :int, :pointer, :pointer], :int
     attach_function :XRegisterIMInstantiateCallback, [Display.ptr, :pointer, :string, :string, :XIDProc, :XPointer], :bool
     attach_function :XUnregisterIMInstantiateCallback, [Display.ptr, :pointer, :string, :string, :XIDProc, :XPointer], :bool
     attach_function :XInternalConnectionNumbers, [Display.ptr, :pointer, :pointer], :Status

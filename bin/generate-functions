@@ -52,7 +52,7 @@ class FFIGenerator
   def typesym(type)
     type = type.gsub(/ \*\z/, '*').gsub(/ \*\*\z/, '**')
     case type
-    when 'Display*', 'XKeyEvent*', 'XEvent*', 'XMappingEvent*', 'XKeyPressedEvent*',
+    when 'Display*', 'XKeyEvent*', 'XEvent*', 'XMappingEvent*'
       'XGenericEventCookie*'
       type.sub(/ ?\*\z/, '').concat('.ptr')
     when 'XFontStruct*', 'XTimeCoord*', 'XModifierKeymap*', 'Visual*', 'XImage*',
@@ -61,7 +61,7 @@ class FFIGenerator
       'XKeyboardControl*', 'XArc*', 'XChar2b*', 'XPoint*', 'XRectangle*', 'XSegment*',
       'XTextItem*', 'XTextItem16*', 'XKeyboardState*', 'XWindowAttributes*',
       'XCharStruct*', 'XOM', 'XOC', 'XFontSet', 'XFontSetExtents*',
-      'XmbTextItem*', 'XwcTextItem*', 'XIM', 'XIC'
+      'XmbTextItem*', 'XwcTextItem*', 'XIM', 'XIC', 'XKeyPressedEvent*'
       ':pointer'
     when 'XID', 'Window', 'Time', 'KeyCode', 'int', 'Status', 'Drawable', 'void', 'Atom',
       'KeySym', 'Colormap', 'Pixmap', 'Cursor', 'Font', 'GC', 'GContext', 'long',
@@ -73,7 +73,7 @@ class FFIGenerator
     when 'int*', 'Atom*', 'char**', 'Colormap*', 'XFontStruct**', 'Bool*', 'KeySym*',
       'char **', 'XExtData**', 'Atom**', 'char***', 'Window**', 'Window*', 'struct _XExtData**',
       'unsigned long*', 'unsigned char*', 'void*', 'unsigned int*', 'unsigned char**', 'Pixmap*',
-      'struct _XrmHashBucketRec*', 'XFontStruct***', 'wchar_t*', 'Status*', 'int**', 'wchar_t'
+      'struct _XrmHashBucketRec*', 'XFontStruct***', 'wchar_t*', 'Status*', 'int**', 'wchar_t', 'char [32]'
       ':pointer'
     when 'unsigned int'
       ':uint'
@@ -83,8 +83,6 @@ class FFIGenerator
       ':bool'
     when 'XEDataObject'
       'XEDataObject.by_value'
-    when 'char [32]'
-      '[:char, 32]'
     else
       raise "Unprocessible type name: '#{type}'"
     end
