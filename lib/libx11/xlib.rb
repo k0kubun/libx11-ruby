@@ -23,8 +23,8 @@ module LibX11
     typedef :XID,    :Window
 
     require 'libx11/xlib/display'
-    require 'libx11/xlib/xedata_object'
-    require 'libx11/xlib/xevent'
+    require 'libx11/xlib/x_edata_object'
+    require 'libx11/xlib/x_event'
 
     callback :XConnectionWatchProc, [Display.ptr, :XPointer, :int, :bool, :pointer], :void
     callback :XErrorHandler, [Display.ptr, XErrorEvent.ptr], :int
