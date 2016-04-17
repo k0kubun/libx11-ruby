@@ -8,7 +8,7 @@ module LibX11
         :bell_duration,      :uint,
         :led_mask,           :ulong,
         :global_auto_repeat, :int,
-        :auto_repeats[32],   :char,
+        :auto_repeats,       [:char, 32],
       )
     end
   end

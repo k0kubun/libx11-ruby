@@ -30,9 +30,7 @@ class FFIWriter
     _, params, name = str.match(%r[typedef struct {([^{}]+)} ([^ ;]+);]m).to_a
 
     result = source_prefix(name) + source_body(params) + source_suffix
-    if name != 'XKeymapEvent'
-      File.write("lib/libx11/xlib/#{name.underscore}.rb", result)
-    end
+    File.write("lib/libx11/xlib/#{name.underscore}.rb", result)
   end
 
   def source_prefix(name)
@@ -50,8 +48,13 @@ class FFIWriter
     lines = expand_multiple_vars(lines).reject(&:empty?)
     layouts = lines.map do |line|
       line = line.gsub(/\t/, ' ')
-      _, type, var = line.match(/\A(.+ \**)([^ *]+);/).to_a
-      [":#{var}", Typesym.typesym(type.strip)]
+      if line =~ /\[\d+\]/
+        _, type, var, num = line.match(/\A([^ ]+) ([^\*\[]+)\[(\d+)\]/).to_a
+        [":#{var}", "[:#{type}, #{num}]"]
+      else
+        _, type, var = line.match(/\A(.+ \**)([^ *]+);/).to_a
+        [":#{var}", Typesym.typesym(type.strip)]
+      end
     end
     build_layout(layouts)
   end
