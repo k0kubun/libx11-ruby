@@ -3,7 +3,7 @@ module Typesym
     type = type.gsub(/ +\*\z/, '*').gsub(/ +\*\*\z/, '**')
     case type
     when 'Display*', 'XKeyEvent*', 'XEvent*', 'XMappingEvent*',
-      'XGenericEventCookie*', 'Depth*', 'XFontProp*', 'XIMStyle*'
+      'XGenericEventCookie*', 'Depth*', 'XFontProp*'
       type.sub(/ ?\*\z/, '').concat('.ptr')
     when 'XFontStruct*', 'XTimeCoord*', 'XModifierKeymap*', 'Visual*', 'XImage*',
       'XColor*', 'XGCValues*', 'XSetWindowAttributes*', 'XHostAddress*', 'Screen*',
@@ -11,7 +11,8 @@ module Typesym
       'XKeyboardControl*', 'XArc*', 'XChar2b*', 'XPoint*', 'XRectangle*', 'XSegment*',
       'XTextItem*', 'XTextItem16*', 'XKeyboardState*', 'XWindowAttributes*',
       'XCharStruct*', 'XOM', 'XOC', 'XFontSet', 'XFontSetExtents*',
-      'XmbTextItem*', 'XwcTextItem*', 'XIM', 'XIC', 'XKeyPressedEvent*', 'XOrientation*'
+      'XmbTextItem*', 'XwcTextItem*', 'XIM', 'XIC', 'XKeyPressedEvent*', 'XOrientation*',
+      'XIMStyle*'
       ':pointer'
     when 'XID', 'Window', 'Time', 'KeyCode', 'int', 'Status', 'Drawable', 'void', 'Atom',
       'KeySym', 'Colormap', 'Pixmap', 'Cursor', 'Font', 'GC', 'GContext', 'long',

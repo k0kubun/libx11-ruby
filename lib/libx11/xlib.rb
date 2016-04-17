@@ -12,6 +12,7 @@ module LibX11
     typedef :ulong,  :Time
     typedef :ulong,  :VisualID
     typedef :ulong,  :XID
+    typedef :ulong,  :XIMStyle
     typedef :XID,    :Colormap
     typedef :XID,    :Cursor
     typedef :XID,    :Drawable
@@ -23,8 +24,24 @@ module LibX11
     typedef :XID,    :Window
 
     require 'libx11/xlib/display'
-    require 'libx11/xlib/x_edata_object'
     require 'libx11/xlib/x_event'
+
+    callback :XConnectionWatchProc, [Display.ptr, :XPointer, :int, :bool, :pointer], :void
+    callback :XErrorHandler, [Display.ptr, XErrorEvent.ptr], :int
+    callback :XICProc, [:pointer, :XPointer, :XPointer], :void
+    callback :XIDProc, [Display.ptr, :XPointer, :XPointer], :void
+    callback :XIMProc, [:pointer, :XPointer, :XPointer], :void
+    callback :XIOErrorHandler, [Display.ptr], :int
+
+    enum :XOrientation, [
+      :XOMOrientation_LTR_TTB,
+      :XOMOrientation_RTL_TTB,
+      :XOMOrientation_TTB_LTR,
+      :XOMOrientation_TTB_RTL,
+      :XOMOrientation_Context,
+    ]
+
+    require 'libx11/xlib/x_edata_object'
     require 'libx11/xlib/depth'
     require 'libx11/xlib/screen'
     require 'libx11/xlib/screen_format'
@@ -62,21 +79,6 @@ module LibX11
     require 'libx11/xlib/xom_font_info'
     require 'libx11/xlib/xom_orientation'
     require 'libx11/xlib/xwc_text_item'
-
-    callback :XConnectionWatchProc, [Display.ptr, :XPointer, :int, :bool, :pointer], :void
-    callback :XErrorHandler, [Display.ptr, XErrorEvent.ptr], :int
-    callback :XICProc, [:pointer, :XPointer, :XPointer], :void
-    callback :XIDProc, [Display.ptr, :XPointer, :XPointer], :void
-    callback :XIMProc, [:pointer, :XPointer, :XPointer], :void
-    callback :XIOErrorHandler, [Display.ptr], :int
-
-    enum :XOrientation, [
-      :XOMOrientation_LTR_TTB,
-      :XOMOrientation_RTL_TTB,
-      :XOMOrientation_TTB_LTR,
-      :XOMOrientation_TTB_RTL,
-      :XOMOrientation_Context,
-    ]
 
     attach_function :XLoadQueryFont, [Display.ptr, :string], :pointer
     attach_function :XQueryFont, [Display.ptr, :XID], :pointer

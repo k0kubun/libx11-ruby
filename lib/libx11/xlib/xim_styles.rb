@@ -3,7 +3,7 @@ module LibX11
     class XIMStyles < FFI::Struct
       layout(
         :count_styles,     :ushort,
-        :supported_styles, XIMStyle.ptr,
+        :supported_styles, :pointer,
       )
     end
   end
