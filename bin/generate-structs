@@ -1,0 +1,100 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'active_support'
+require 'active_support/core_ext'
+require_relative 'typesym'
+
+target = ARGV[0]
+abort "'#{target}' does not exist" unless File.exist?(target)
+
+source  = File.read(target)
+structs = source.scan(/typedef struct {[^{}]+} [^ ]+;/m)
+
+class FFIWriter
+  def initialize(structs)
+    @structs = structs
+  end
+
+  def write_ffis
+    @structs.each do |struct|
+      write_ffi(struct)
+    end
+  end
+
+  private
+
+  def write_ffi(struct)
+    str = drop_comments(struct)
+    str = preprocess(str)
+    _, params, name = str.match(%r[typedef struct {([^{}]+)} ([^ ;]+);]m).to_a
+
+    result = source_prefix(name) + source_body(params) + source_suffix
+    if name != 'XKeymapEvent'
+      File.write("lib/libx11/xlib/#{name.underscore}.rb", result)
+    end
+  end
+
+  def source_prefix(name)
+    <<~PREFIX
+      module LibX11
+        module Xlib
+          class #{name} < FFI::Struct
+            layout(
+    PREFIX
+  end
+
+  def source_body(params)
+    params = params.gsub(%r[/\*[^/]+\*/]m, '')
+    lines = params.strip.split("\n").map(&:strip)
+    lines = expand_multiple_vars(lines).reject(&:empty?)
+    layouts = lines.map do |line|
+      line = line.gsub(/\t/, ' ')
+      _, type, var = line.match(/\A(.+ \**)([^ *]+);/).to_a
+      [":#{var}", Typesym.typesym(type.strip)]
+    end
+    build_layout(layouts)
+  end
+
+  def source_suffix
+    <<~SUFFIX
+            )
+          end
+        end
+      end
+    SUFFIX
+  end
+
+  def expand_multiple_vars(lines)
+    [].tap do |result|
+      lines.each do |line|
+        if line =~ /, /
+          first, *rest = line.split(', ')
+          _, type, var = first.match(/\A(.+ \**)([^ *]+)\z/).to_a
+          [var, *rest].each do |name|
+            result << "#{type}#{name.sub(/;\z/, '')};"
+          end
+        else
+          result << line
+        end
+      end
+    end
+  end
+
+  def drop_comments(str)
+    str.gsub(%r[/\*[^/\*]+\*/], '')
+  end
+
+  def build_layout(layouts)
+    max = layouts.map(&:first).map(&:length).max
+    layouts.map do |var, type|
+      "#{' ' * 8}#{var},#{' ' * (max - var.length)} #{type},"
+    end.join("\n").concat("\n")
+  end
+
+  def preprocess(str)
+    str.gsub(/#if defined\(__cplusplus\) \|\| defined\(c_plusplus\)\n[^\n]+\n#else\n([^\n]+)\n#endif\n/m, '\1' << "\n")
+  end
+end
+
+FFIWriter.new(structs).write_ffis

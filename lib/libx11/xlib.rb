@@ -28,8 +28,18 @@ module LibX11
 
     callback :XConnectionWatchProc, [Display.ptr, :XPointer, :int, :bool, :pointer], :void
     callback :XErrorHandler, [Display.ptr, XErrorEvent.ptr], :int
+    callback :XICProc, [:pointer, :XPointer, :XPointer], :void
     callback :XIDProc, [Display.ptr, :XPointer, :XPointer], :void
+    callback :XIMProc, [:pointer, :XPointer, :XPointer], :void
     callback :XIOErrorHandler, [Display.ptr], :int
+
+    enum :XOrientation, [
+      :XOMOrientation_LTR_TTB,
+      :XOMOrientation_RTL_TTB,
+      :XOMOrientation_TTB_LTR,
+      :XOMOrientation_TTB_RTL,
+      :XOMOrientation_Context,
+    ]
 
     attach_function :XLoadQueryFont, [Display.ptr, :string], :pointer
     attach_function :XQueryFont, [Display.ptr, :XID], :pointer
