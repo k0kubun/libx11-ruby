@@ -16,7 +16,7 @@ module Typesym
     when 'XID', 'Window', 'Time', 'KeyCode', 'int', 'Status', 'Drawable', 'void', 'Atom',
       'KeySym', 'Colormap', 'Pixmap', 'Cursor', 'Font', 'GC', 'GContext', 'long',
       'VisualID', 'XPointer', 'XIDProc', 'XConnectionWatchProc', 'XErrorHandler',
-      'XIOErrorHandler', 'char', 'short', 'unsigned', 'XOrientation', 'XIMProc', 'XICProc'
+      'XIOErrorHandler', 'char', 'short', 'XOrientation', 'XIMProc', 'XICProc'
       ":#{type}"
     when 'char*', 'const char*'
       ':string'
@@ -34,7 +34,7 @@ module Typesym
       ':ushort'
     when 'Bool'
       ':bool'
-    when 'unsigned char'
+    when 'unsigned char', 'unsigned'
       ':uchar'
     when 'XEDataObject'
       'XEDataObject.by_value'

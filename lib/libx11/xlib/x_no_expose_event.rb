@@ -4,7 +4,7 @@ module LibX11
       layout(
         :type,       :int,
         :serial,     :ulong,
-        :send_event, :Bool,
+        :send_event, :bool,
         :display,    Display.ptr,
         :drawable,   :Drawable,
         :major_code, :int,

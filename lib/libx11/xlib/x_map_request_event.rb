@@ -2,16 +2,12 @@ module LibX11
   module Xlib
     class XMapRequestEvent < FFI::Struct
       layout(
-        :type,              :int,
-        :serial,            :ulong,
-        :send_event,        :Bool,
-        :display,           Display.ptr,
-        :event,             :Window,
-        :window,            :Window,
-        :parent,            :Window,
-        :x,                 :int,
-        :y,                 :int,
-        :override_redirect, :Bool,
+        :type,       :int,
+        :serial,     :ulong,
+        :send_event, :bool,
+        :display,    Display.ptr,
+        :parent,     :Window,
+        :window,     :Window,
       )
     end
   end

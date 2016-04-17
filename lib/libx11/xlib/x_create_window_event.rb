@@ -4,7 +4,7 @@ module LibX11
       layout(
         :type,              :int,
         :serial,            :ulong,
-        :send_event,        :Bool,
+        :send_event,        :bool,
         :display,           Display.ptr,
         :parent,            :Window,
         :window,            :Window,
@@ -13,7 +13,7 @@ module LibX11
         :width,             :int,
         :height,            :int,
         :border_width,      :int,
-        :override_redirect, :Bool,
+        :override_redirect, :bool,
       )
     end
   end

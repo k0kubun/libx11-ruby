@@ -4,7 +4,7 @@ module LibX11
       layout(
         :type,        :int,
         :serial,      :ulong,
-        :send_event,  :Bool,
+        :send_event,  :bool,
         :display,     Display.ptr,
         :window,      :Window,
         :root,        :Window,
@@ -16,7 +16,7 @@ module LibX11
         :y_root,      :int,
         :state,       :uint,
         :button,      :uint,
-        :same_screen, :Bool,
+        :same_screen, :bool,
       )
     end
   end
