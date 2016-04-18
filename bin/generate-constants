@@ -17,24 +17,30 @@ class ConstGenerator
 
   def write
     @parts.each do |part|
-      write_part(part)
+      inject_part(part)
     end
-    #write_part(@parts.first)
+    source = <<~PREFIX + @entities.join("\n\n") + "\n" + <<~SUFFIX
+      module LibX11
+        module X
+    PREFIX
+        end
+      end
+    SUFFIX
+    File.write('lib/libx11/x.rb', source)
   end
 
   private
 
-  def write_part(part)
+  def inject_part(part)
     entity = convert_part(part)
-    puts entity
-    @entities << entity
+    @entities << entity.gsub(/^/, ' ' * 4)
   end
 
   def convert_part(part)
     part = part.strip
     case part
     when %r[\A/\*+ ?\n.*\n \*+/\z]m
-      puts part.gsub(/^../, '#').sub(/\/\z/, '')
+      part.gsub(/^../, '#').sub(/\/\z/, '')
     when %r[\A/\* .+ \*/\z]m
       part.gsub(/^/, '# ')
     when %r[\A#ifndef None\n.+\n#endif\z]m
@@ -72,7 +78,7 @@ class ConstGenerator
       "# #{comment}"
     when %r{\A#define [^ ]+( +)[^ ]+\z}
       _, const, spaces, value = line.match(%r{\A#define ([^ ]+)( +)([^ ]+)\z}).to_a
-      "#{const}#{spaces}= #{value}"
+      "#{const}#{spaces}= #{convert_value(value)}"
     else
       abort "Unprocessible line:\n#{line.inspect}"
     end
