@@ -4,7 +4,7 @@ module LibX11
       layout(
         :depth,    :int,
         :nvisuals, :int,
-        :visuals,  :pointer,
+        :visuals,  Visual.ptr,
       )
     end
   end

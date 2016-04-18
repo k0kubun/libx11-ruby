@@ -15,7 +15,7 @@ module LibX11
         :properties,        XFontProp.ptr,
         :min_bounds,        XCharStruct,
         :max_bounds,        XCharStruct,
-        :per_char,          :pointer,
+        :per_char,          XCharStruct.ptr,
         :ascent,            :int,
         :descent,           :int,
       )

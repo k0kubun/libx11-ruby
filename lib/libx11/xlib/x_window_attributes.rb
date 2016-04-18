@@ -8,7 +8,7 @@ module LibX11
         :height,                :int,
         :border_width,          :int,
         :depth,                 :int,
-        :visual,                :pointer,
+        :visual,                Visual.ptr,
         :root,                  :Window,
         :class,                 :int,
         :bit_gravity,           :int,
@@ -24,7 +24,7 @@ module LibX11
         :your_event_mask,       :long,
         :do_not_propagate_mask, :long,
         :override_redirect,     :bool,
-        :screen,                :pointer,
+        :screen,                Screen.ptr,
       )
     end
   end

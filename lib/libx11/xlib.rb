@@ -80,12 +80,12 @@ module LibX11
     require 'libx11/xlib/xom_orientation'
     require 'libx11/xlib/xwc_text_item'
 
-    attach_function :XLoadQueryFont, [Display.ptr, :string], :pointer
-    attach_function :XQueryFont, [Display.ptr, :XID], :pointer
-    attach_function :XGetMotionEvents, [Display.ptr, :Window, :Time, :Time, :pointer], :pointer
-    attach_function :XDeleteModifiermapEntry, [:pointer, :KeyCode, :int], :pointer
-    attach_function :XNewModifiermap, [:int], :pointer
-    attach_function :XCreateImage, [Display.ptr, :pointer, :uint, :int, :int, :string, :uint, :uint, :int, :int], :pointer
+    attach_function :XLoadQueryFont, [Display.ptr, :string], XFontStruct.ptr
+    attach_function :XQueryFont, [Display.ptr, :XID], XFontStruct.ptr
+    attach_function :XGetMotionEvents, [Display.ptr, :Window, :Time, :Time, :pointer], XTimeCoord.ptr
+    attach_function :XDeleteModifiermapEntry, [XModifierKeymap.ptr, :KeyCode, :int], XModifierKeymap.ptr
+    attach_function :XNewModifiermap, [:int], XModifierKeymap.ptr
+    attach_function :XCreateImage, [Display.ptr, Visual.ptr, :uint, :int, :int, :string, :uint, :uint, :int, :int], :pointer
     attach_function :XInitImage, [:pointer], :Status
     attach_function :XGetImage, [Display.ptr, :Drawable, :int, :int, :uint, :uint, :ulong, :int], :pointer
     attach_function :XGetSubImage, [Display.ptr, :Drawable, :int, :int, :uint, :uint, :ulong, :int, :pointer, :int, :int], :pointer
@@ -101,12 +101,12 @@ module LibX11
     attach_function :XInternAtom, [Display.ptr, :string, :bool], :Atom
     attach_function :XInternAtoms, [Display.ptr, :pointer, :int, :bool, :pointer], :Status
     attach_function :XCopyColormapAndFree, [Display.ptr, :Colormap], :Colormap
-    attach_function :XCreateColormap, [Display.ptr, :Window, :pointer, :int], :Colormap
-    attach_function :XCreatePixmapCursor, [Display.ptr, :Pixmap, :Pixmap, :pointer, :pointer, :uint, :uint], :Cursor
-    attach_function :XCreateGlyphCursor, [Display.ptr, :Font, :Font, :uint, :uint, :pointer, :pointer], :Cursor
+    attach_function :XCreateColormap, [Display.ptr, :Window, Visual.ptr, :int], :Colormap
+    attach_function :XCreatePixmapCursor, [Display.ptr, :Pixmap, :Pixmap, XColor.ptr, XColor.ptr, :uint, :uint], :Cursor
+    attach_function :XCreateGlyphCursor, [Display.ptr, :Font, :Font, :uint, :uint, XColor.ptr, XColor.ptr], :Cursor
     attach_function :XCreateFontCursor, [Display.ptr, :uint], :Cursor
     attach_function :XLoadFont, [Display.ptr, :string], :Font
-    attach_function :XCreateGC, [Display.ptr, :Drawable, :ulong, :pointer], :GC
+    attach_function :XCreateGC, [Display.ptr, :Drawable, :ulong, XGCValues.ptr], :GC
     attach_function :XGContextFromGC, [:GC], :GContext
     attach_function :XFlushGC, [Display.ptr, :GC], :void
     attach_function :XCreatePixmap, [Display.ptr, :Drawable, :uint, :uint, :uint], :Pixmap
@@ -114,14 +114,14 @@ module LibX11
     attach_function :XCreatePixmapFromBitmapData, [Display.ptr, :Drawable, :string, :uint, :uint, :ulong, :ulong, :uint], :Pixmap
     attach_function :XCreateSimpleWindow, [Display.ptr, :Window, :int, :int, :uint, :uint, :uint, :ulong, :ulong], :Window
     attach_function :XGetSelectionOwner, [Display.ptr, :Atom], :Window
-    attach_function :XCreateWindow, [Display.ptr, :Window, :int, :int, :uint, :uint, :uint, :int, :uint, :pointer, :ulong, :pointer], :Window
+    attach_function :XCreateWindow, [Display.ptr, :Window, :int, :int, :uint, :uint, :uint, :int, :uint, Visual.ptr, :ulong, XSetWindowAttributes.ptr], :Window
     attach_function :XListInstalledColormaps, [Display.ptr, :Window, :pointer], :pointer
     attach_function :XListFonts, [Display.ptr, :string, :int, :pointer], :pointer
     attach_function :XListFontsWithInfo, [Display.ptr, :string, :int, :pointer, :pointer], :pointer
     attach_function :XGetFontPath, [Display.ptr, :pointer], :pointer
     attach_function :XListExtensions, [Display.ptr, :pointer], :pointer
     attach_function :XListProperties, [Display.ptr, :Window, :pointer], :pointer
-    attach_function :XListHosts, [Display.ptr, :pointer, :pointer], :pointer
+    attach_function :XListHosts, [Display.ptr, :pointer, :pointer], XHostAddress.ptr
     attach_function :XKeycodeToKeysym, [Display.ptr, :KeyCode, :int], :KeySym
     attach_function :XLookupKeysym, [XKeyEvent.ptr, :int], :KeySym
     attach_function :XGetKeyboardMapping, [Display.ptr, :KeyCode, :int, :pointer], :pointer
@@ -129,44 +129,44 @@ module LibX11
     attach_function :XMaxRequestSize, [Display.ptr], :long
     attach_function :XExtendedMaxRequestSize, [Display.ptr], :long
     attach_function :XResourceManagerString, [Display.ptr], :string
-    attach_function :XScreenResourceString, [:pointer], :string
+    attach_function :XScreenResourceString, [Screen.ptr], :string
     attach_function :XDisplayMotionBufferSize, [Display.ptr], :ulong
-    attach_function :XVisualIDFromVisual, [:pointer], :VisualID
+    attach_function :XVisualIDFromVisual, [Visual.ptr], :VisualID
     attach_function :XInitThreads, [], :Status
     attach_function :XLockDisplay, [Display.ptr], :void
     attach_function :XUnlockDisplay, [Display.ptr], :void
-    attach_function :XInitExtension, [Display.ptr, :string], :pointer
-    attach_function :XAddExtension, [Display.ptr], :pointer
+    attach_function :XInitExtension, [Display.ptr, :string], XExtCodes.ptr
+    attach_function :XAddExtension, [Display.ptr], XExtCodes.ptr
     attach_function :XFindOnExtensionList, [:pointer, :int], :pointer
     attach_function :XEHeadOfExtensionList, [XEDataObject.by_value], :pointer
     attach_function :XRootWindow, [Display.ptr, :int], :Window
     attach_function :XDefaultRootWindow, [Display.ptr], :Window
-    attach_function :XRootWindowOfScreen, [:pointer], :Window
-    attach_function :XDefaultVisual, [Display.ptr, :int], :pointer
-    attach_function :XDefaultVisualOfScreen, [:pointer], :pointer
+    attach_function :XRootWindowOfScreen, [Screen.ptr], :Window
+    attach_function :XDefaultVisual, [Display.ptr, :int], Visual.ptr
+    attach_function :XDefaultVisualOfScreen, [Screen.ptr], Visual.ptr
     attach_function :XDefaultGC, [Display.ptr, :int], :GC
-    attach_function :XDefaultGCOfScreen, [:pointer], :GC
+    attach_function :XDefaultGCOfScreen, [Screen.ptr], :GC
     attach_function :XBlackPixel, [Display.ptr, :int], :ulong
     attach_function :XWhitePixel, [Display.ptr, :int], :ulong
     attach_function :XAllPlanes, [], :ulong
-    attach_function :XBlackPixelOfScreen, [:pointer], :ulong
-    attach_function :XWhitePixelOfScreen, [:pointer], :ulong
+    attach_function :XBlackPixelOfScreen, [Screen.ptr], :ulong
+    attach_function :XWhitePixelOfScreen, [Screen.ptr], :ulong
     attach_function :XNextRequest, [Display.ptr], :ulong
     attach_function :XLastKnownRequestProcessed, [Display.ptr], :ulong
     attach_function :XServerVendor, [Display.ptr], :string
     attach_function :XDisplayString, [Display.ptr], :string
     attach_function :XDefaultColormap, [Display.ptr, :int], :Colormap
-    attach_function :XDefaultColormapOfScreen, [:pointer], :Colormap
-    attach_function :XDisplayOfScreen, [:pointer], Display.ptr
-    attach_function :XScreenOfDisplay, [Display.ptr, :int], :pointer
-    attach_function :XDefaultScreenOfDisplay, [Display.ptr], :pointer
-    attach_function :XEventMaskOfScreen, [:pointer], :long
-    attach_function :XScreenNumberOfScreen, [:pointer], :int
+    attach_function :XDefaultColormapOfScreen, [Screen.ptr], :Colormap
+    attach_function :XDisplayOfScreen, [Screen.ptr], Display.ptr
+    attach_function :XScreenOfDisplay, [Display.ptr, :int], Screen.ptr
+    attach_function :XDefaultScreenOfDisplay, [Display.ptr], Screen.ptr
+    attach_function :XEventMaskOfScreen, [Screen.ptr], :long
+    attach_function :XScreenNumberOfScreen, [Screen.ptr], :int
     attach_function :XSetErrorHandler, [:XErrorHandler], :XErrorHandler
     attach_function :XSetIOErrorHandler, [:XIOErrorHandler], :XIOErrorHandler
-    attach_function :XListPixmapFormats, [Display.ptr, :pointer], :pointer
+    attach_function :XListPixmapFormats, [Display.ptr, :pointer], XPixmapFormatValues.ptr
     attach_function :XListDepths, [Display.ptr, :int, :pointer], :pointer
-    attach_function :XReconfigureWMWindow, [Display.ptr, :Window, :int, :uint, :pointer], :Status
+    attach_function :XReconfigureWMWindow, [Display.ptr, :Window, :int, :uint, XWindowChanges.ptr], :Status
     attach_function :XGetWMProtocols, [Display.ptr, :Window, :pointer, :pointer], :Status
     attach_function :XSetWMProtocols, [Display.ptr, :Window, :pointer, :int], :Status
     attach_function :XIconifyWindow, [Display.ptr, :Window, :int], :Status
@@ -177,14 +177,14 @@ module LibX11
     attach_function :XFreeStringList, [:pointer], :void
     attach_function :XSetTransientForHint, [Display.ptr, :Window, :Window], :int
     attach_function :XActivateScreenSaver, [Display.ptr], :int
-    attach_function :XAddHost, [Display.ptr, :pointer], :int
-    attach_function :XAddHosts, [Display.ptr, :pointer, :int], :int
+    attach_function :XAddHost, [Display.ptr, XHostAddress.ptr], :int
+    attach_function :XAddHosts, [Display.ptr, XHostAddress.ptr, :int], :int
     attach_function :XAddToExtensionList, [:pointer, :pointer], :int
     attach_function :XAddToSaveSet, [Display.ptr, :Window], :int
-    attach_function :XAllocColor, [Display.ptr, :Colormap, :pointer], :Status
+    attach_function :XAllocColor, [Display.ptr, :Colormap, XColor.ptr], :Status
     attach_function :XAllocColorCells, [Display.ptr, :Colormap, :bool, :pointer, :uint, :pointer, :uint], :Status
     attach_function :XAllocColorPlanes, [Display.ptr, :Colormap, :bool, :pointer, :int, :int, :int, :int, :pointer, :pointer, :pointer], :Status
-    attach_function :XAllocNamedColor, [Display.ptr, :Colormap, :string, :pointer, :pointer], :Status
+    attach_function :XAllocNamedColor, [Display.ptr, :Colormap, :string, XColor.ptr, XColor.ptr], :Status
     attach_function :XAllowEvents, [Display.ptr, :int, :Time], :int
     attach_function :XAutoRepeatOff, [Display.ptr], :int
     attach_function :XAutoRepeatOn, [Display.ptr], :int
@@ -192,15 +192,15 @@ module LibX11
     attach_function :XBitmapBitOrder, [Display.ptr], :int
     attach_function :XBitmapPad, [Display.ptr], :int
     attach_function :XBitmapUnit, [Display.ptr], :int
-    attach_function :XCellsOfScreen, [:pointer], :int
+    attach_function :XCellsOfScreen, [Screen.ptr], :int
     attach_function :XChangeActivePointerGrab, [Display.ptr, :uint, :Cursor, :Time], :int
-    attach_function :XChangeGC, [Display.ptr, :GC, :ulong, :pointer], :int
-    attach_function :XChangeKeyboardControl, [Display.ptr, :ulong, :pointer], :int
+    attach_function :XChangeGC, [Display.ptr, :GC, :ulong, XGCValues.ptr], :int
+    attach_function :XChangeKeyboardControl, [Display.ptr, :ulong, XKeyboardControl.ptr], :int
     attach_function :XChangeKeyboardMapping, [Display.ptr, :int, :int, :pointer, :int], :int
     attach_function :XChangePointerControl, [Display.ptr, :bool, :bool, :int, :int, :int], :int
     attach_function :XChangeProperty, [Display.ptr, :Window, :Atom, :Atom, :int, :int, :pointer, :int], :int
     attach_function :XChangeSaveSet, [Display.ptr, :Window, :int], :int
-    attach_function :XChangeWindowAttributes, [Display.ptr, :Window, :ulong, :pointer], :int
+    attach_function :XChangeWindowAttributes, [Display.ptr, :Window, :ulong, XSetWindowAttributes.ptr], :int
     attach_function :XCheckMaskEvent, [Display.ptr, :long, XEvent.ptr], :bool
     attach_function :XCheckTypedEvent, [Display.ptr, :int, XEvent.ptr], :bool
     attach_function :XCheckTypedWindowEvent, [Display.ptr, :Window, :int, XEvent.ptr], :bool
@@ -211,21 +211,21 @@ module LibX11
     attach_function :XClearArea, [Display.ptr, :Window, :int, :int, :uint, :uint, :bool], :int
     attach_function :XClearWindow, [Display.ptr, :Window], :int
     attach_function :XCloseDisplay, [Display.ptr], :int
-    attach_function :XConfigureWindow, [Display.ptr, :Window, :uint, :pointer], :int
+    attach_function :XConfigureWindow, [Display.ptr, :Window, :uint, XWindowChanges.ptr], :int
     attach_function :XConnectionNumber, [Display.ptr], :int
     attach_function :XConvertSelection, [Display.ptr, :Atom, :Atom, :Atom, :Window, :Time], :int
     attach_function :XCopyArea, [Display.ptr, :Drawable, :Drawable, :GC, :int, :int, :uint, :uint, :int, :int], :int
     attach_function :XCopyGC, [Display.ptr, :GC, :ulong, :GC], :int
     attach_function :XCopyPlane, [Display.ptr, :Drawable, :Drawable, :GC, :int, :int, :uint, :uint, :int, :int, :ulong], :int
     attach_function :XDefaultDepth, [Display.ptr, :int], :int
-    attach_function :XDefaultDepthOfScreen, [:pointer], :int
+    attach_function :XDefaultDepthOfScreen, [Screen.ptr], :int
     attach_function :XDefaultScreen, [Display.ptr], :int
     attach_function :XDefineCursor, [Display.ptr, :Window, :Cursor], :int
     attach_function :XDeleteProperty, [Display.ptr, :Window, :Atom], :int
     attach_function :XDestroyWindow, [Display.ptr, :Window], :int
     attach_function :XDestroySubwindows, [Display.ptr, :Window], :int
-    attach_function :XDoesBackingStore, [:pointer], :int
-    attach_function :XDoesSaveUnders, [:pointer], :bool
+    attach_function :XDoesBackingStore, [Screen.ptr], :int
+    attach_function :XDoesSaveUnders, [Screen.ptr], :bool
     attach_function :XDisableAccessControl, [Display.ptr], :int
     attach_function :XDisplayCells, [Display.ptr, :int], :int
     attach_function :XDisplayHeight, [Display.ptr, :int], :int
@@ -235,28 +235,28 @@ module LibX11
     attach_function :XDisplayWidth, [Display.ptr, :int], :int
     attach_function :XDisplayWidthMM, [Display.ptr, :int], :int
     attach_function :XDrawArc, [Display.ptr, :Drawable, :GC, :int, :int, :uint, :uint, :int, :int], :int
-    attach_function :XDrawArcs, [Display.ptr, :Drawable, :GC, :pointer, :int], :int
+    attach_function :XDrawArcs, [Display.ptr, :Drawable, :GC, XArc.ptr, :int], :int
     attach_function :XDrawImageString, [Display.ptr, :Drawable, :GC, :int, :int, :string, :int], :int
-    attach_function :XDrawImageString16, [Display.ptr, :Drawable, :GC, :int, :int, :pointer, :int], :int
+    attach_function :XDrawImageString16, [Display.ptr, :Drawable, :GC, :int, :int, XChar2b.ptr, :int], :int
     attach_function :XDrawLine, [Display.ptr, :Drawable, :GC, :int, :int, :int, :int], :int
-    attach_function :XDrawLines, [Display.ptr, :Drawable, :GC, :pointer, :int, :int], :int
+    attach_function :XDrawLines, [Display.ptr, :Drawable, :GC, XPoint.ptr, :int, :int], :int
     attach_function :XDrawPoint, [Display.ptr, :Drawable, :GC, :int, :int], :int
-    attach_function :XDrawPoints, [Display.ptr, :Drawable, :GC, :pointer, :int, :int], :int
+    attach_function :XDrawPoints, [Display.ptr, :Drawable, :GC, XPoint.ptr, :int, :int], :int
     attach_function :XDrawRectangle, [Display.ptr, :Drawable, :GC, :int, :int, :uint, :uint], :int
-    attach_function :XDrawRectangles, [Display.ptr, :Drawable, :GC, :pointer, :int], :int
-    attach_function :XDrawSegments, [Display.ptr, :Drawable, :GC, :pointer, :int], :int
+    attach_function :XDrawRectangles, [Display.ptr, :Drawable, :GC, XRectangle.ptr, :int], :int
+    attach_function :XDrawSegments, [Display.ptr, :Drawable, :GC, XSegment.ptr, :int], :int
     attach_function :XDrawString, [Display.ptr, :Drawable, :GC, :int, :int, :string, :int], :int
-    attach_function :XDrawString16, [Display.ptr, :Drawable, :GC, :int, :int, :pointer, :int], :int
-    attach_function :XDrawText, [Display.ptr, :Drawable, :GC, :int, :int, :pointer, :int], :int
-    attach_function :XDrawText16, [Display.ptr, :Drawable, :GC, :int, :int, :pointer, :int], :int
+    attach_function :XDrawString16, [Display.ptr, :Drawable, :GC, :int, :int, XChar2b.ptr, :int], :int
+    attach_function :XDrawText, [Display.ptr, :Drawable, :GC, :int, :int, XTextItem.ptr, :int], :int
+    attach_function :XDrawText16, [Display.ptr, :Drawable, :GC, :int, :int, XTextItem16.ptr, :int], :int
     attach_function :XEnableAccessControl, [Display.ptr], :int
     attach_function :XEventsQueued, [Display.ptr, :int], :int
     attach_function :XFetchName, [Display.ptr, :Window, :pointer], :Status
     attach_function :XFillArc, [Display.ptr, :Drawable, :GC, :int, :int, :uint, :uint, :int, :int], :int
-    attach_function :XFillArcs, [Display.ptr, :Drawable, :GC, :pointer, :int], :int
-    attach_function :XFillPolygon, [Display.ptr, :Drawable, :GC, :pointer, :int, :int, :int], :int
+    attach_function :XFillArcs, [Display.ptr, :Drawable, :GC, XArc.ptr, :int], :int
+    attach_function :XFillPolygon, [Display.ptr, :Drawable, :GC, XPoint.ptr, :int, :int, :int], :int
     attach_function :XFillRectangle, [Display.ptr, :Drawable, :GC, :int, :int, :uint, :uint], :int
-    attach_function :XFillRectangles, [Display.ptr, :Drawable, :GC, :pointer, :int], :int
+    attach_function :XFillRectangles, [Display.ptr, :Drawable, :GC, XRectangle.ptr, :int], :int
     attach_function :XFlush, [Display.ptr], :int
     attach_function :XForceScreenSaver, [Display.ptr, :int], :int
     attach_function :XFree, [:pointer], :int
@@ -264,56 +264,56 @@ module LibX11
     attach_function :XFreeColors, [Display.ptr, :Colormap, :pointer, :int, :ulong], :int
     attach_function :XFreeCursor, [Display.ptr, :Cursor], :int
     attach_function :XFreeExtensionList, [:pointer], :int
-    attach_function :XFreeFont, [Display.ptr, :pointer], :int
-    attach_function :XFreeFontInfo, [:pointer, :pointer, :int], :int
+    attach_function :XFreeFont, [Display.ptr, XFontStruct.ptr], :int
+    attach_function :XFreeFontInfo, [:pointer, XFontStruct.ptr, :int], :int
     attach_function :XFreeFontNames, [:pointer], :int
     attach_function :XFreeFontPath, [:pointer], :int
     attach_function :XFreeGC, [Display.ptr, :GC], :int
-    attach_function :XFreeModifiermap, [:pointer], :int
+    attach_function :XFreeModifiermap, [XModifierKeymap.ptr], :int
     attach_function :XFreePixmap, [Display.ptr, :Pixmap], :int
     attach_function :XGeometry, [Display.ptr, :int, :string, :string, :uint, :uint, :uint, :int, :int, :pointer, :pointer, :pointer, :pointer], :int
     attach_function :XGetErrorDatabaseText, [Display.ptr, :string, :string, :string, :string, :int], :int
     attach_function :XGetErrorText, [Display.ptr, :int, :string, :int], :int
-    attach_function :XGetFontProperty, [:pointer, :Atom, :pointer], :bool
-    attach_function :XGetGCValues, [Display.ptr, :GC, :ulong, :pointer], :Status
+    attach_function :XGetFontProperty, [XFontStruct.ptr, :Atom, :pointer], :bool
+    attach_function :XGetGCValues, [Display.ptr, :GC, :ulong, XGCValues.ptr], :Status
     attach_function :XGetGeometry, [Display.ptr, :Drawable, :pointer, :pointer, :pointer, :pointer, :pointer, :pointer, :pointer], :Status
     attach_function :XGetIconName, [Display.ptr, :Window, :pointer], :Status
     attach_function :XGetInputFocus, [Display.ptr, :pointer, :pointer], :int
-    attach_function :XGetKeyboardControl, [Display.ptr, :pointer], :int
+    attach_function :XGetKeyboardControl, [Display.ptr, XKeyboardState.ptr], :int
     attach_function :XGetPointerControl, [Display.ptr, :pointer, :pointer, :pointer], :int
     attach_function :XGetPointerMapping, [Display.ptr, :pointer, :int], :int
     attach_function :XGetScreenSaver, [Display.ptr, :pointer, :pointer, :pointer, :pointer], :int
     attach_function :XGetTransientForHint, [Display.ptr, :Window, :pointer], :Status
     attach_function :XGetWindowProperty, [Display.ptr, :Window, :Atom, :long, :long, :bool, :Atom, :pointer, :pointer, :pointer, :pointer, :pointer], :int
-    attach_function :XGetWindowAttributes, [Display.ptr, :Window, :pointer], :Status
+    attach_function :XGetWindowAttributes, [Display.ptr, :Window, XWindowAttributes.ptr], :Status
     attach_function :XGrabButton, [Display.ptr, :uint, :uint, :Window, :bool, :uint, :int, :int, :Window, :Cursor], :int
     attach_function :XGrabKey, [Display.ptr, :int, :uint, :Window, :bool, :int, :int], :int
     attach_function :XGrabKeyboard, [Display.ptr, :Window, :bool, :int, :int, :Time], :int
     attach_function :XGrabPointer, [Display.ptr, :Window, :bool, :uint, :int, :int, :Window, :Cursor, :Time], :int
     attach_function :XGrabServer, [Display.ptr], :int
-    attach_function :XHeightMMOfScreen, [:pointer], :int
-    attach_function :XHeightOfScreen, [:pointer], :int
+    attach_function :XHeightMMOfScreen, [Screen.ptr], :int
+    attach_function :XHeightOfScreen, [Screen.ptr], :int
     attach_function :XImageByteOrder, [Display.ptr], :int
     attach_function :XInstallColormap, [Display.ptr, :Colormap], :int
     attach_function :XKeysymToKeycode, [Display.ptr, :KeySym], :KeyCode
     attach_function :XKillClient, [Display.ptr, :XID], :int
-    attach_function :XLookupColor, [Display.ptr, :Colormap, :string, :pointer, :pointer], :Status
+    attach_function :XLookupColor, [Display.ptr, :Colormap, :string, XColor.ptr, XColor.ptr], :Status
     attach_function :XLowerWindow, [Display.ptr, :Window], :int
     attach_function :XMapRaised, [Display.ptr, :Window], :int
     attach_function :XMapSubwindows, [Display.ptr, :Window], :int
     attach_function :XMapWindow, [Display.ptr, :Window], :int
     attach_function :XMaskEvent, [Display.ptr, :long, XEvent.ptr], :int
-    attach_function :XMaxCmapsOfScreen, [:pointer], :int
-    attach_function :XMinCmapsOfScreen, [:pointer], :int
+    attach_function :XMaxCmapsOfScreen, [Screen.ptr], :int
+    attach_function :XMinCmapsOfScreen, [Screen.ptr], :int
     attach_function :XMoveResizeWindow, [Display.ptr, :Window, :int, :int, :uint, :uint], :int
     attach_function :XMoveWindow, [Display.ptr, :Window, :int, :int], :int
     attach_function :XNextEvent, [Display.ptr, XEvent.ptr], :int, blocking: true
     attach_function :XNoOp, [Display.ptr], :int
-    attach_function :XParseColor, [Display.ptr, :Colormap, :string, :pointer], :Status
+    attach_function :XParseColor, [Display.ptr, :Colormap, :string, XColor.ptr], :Status
     attach_function :XParseGeometry, [:string, :pointer, :pointer, :pointer, :pointer], :int
     attach_function :XPeekEvent, [Display.ptr, XEvent.ptr], :int
     attach_function :XPending, [Display.ptr], :int
-    attach_function :XPlanesOfScreen, [:pointer], :int
+    attach_function :XPlanesOfScreen, [Screen.ptr], :int
     attach_function :XProtocolRevision, [Display.ptr], :int
     attach_function :XProtocolVersion, [Display.ptr], :int
     attach_function :XPutBackEvent, [Display.ptr, XEvent.ptr], :int
@@ -323,23 +323,23 @@ module LibX11
     attach_function :XQueryBestSize, [Display.ptr, :int, :Drawable, :uint, :uint, :pointer, :pointer], :Status
     attach_function :XQueryBestStipple, [Display.ptr, :Drawable, :uint, :uint, :pointer, :pointer], :Status
     attach_function :XQueryBestTile, [Display.ptr, :Drawable, :uint, :uint, :pointer, :pointer], :Status
-    attach_function :XQueryColor, [Display.ptr, :Colormap, :pointer], :int
-    attach_function :XQueryColors, [Display.ptr, :Colormap, :pointer, :int], :int
+    attach_function :XQueryColor, [Display.ptr, :Colormap, XColor.ptr], :int
+    attach_function :XQueryColors, [Display.ptr, :Colormap, XColor.ptr, :int], :int
     attach_function :XQueryExtension, [Display.ptr, :string, :pointer, :pointer, :pointer], :bool
     attach_function :XQueryKeymap, [Display.ptr, :pointer], :int
     attach_function :XQueryPointer, [Display.ptr, :Window, :pointer, :pointer, :pointer, :pointer, :pointer, :pointer, :pointer], :bool
-    attach_function :XQueryTextExtents, [Display.ptr, :XID, :string, :int, :pointer, :pointer, :pointer, :pointer], :int
-    attach_function :XQueryTextExtents16, [Display.ptr, :XID, :pointer, :int, :pointer, :pointer, :pointer, :pointer], :int
+    attach_function :XQueryTextExtents, [Display.ptr, :XID, :string, :int, :pointer, :pointer, :pointer, XCharStruct.ptr], :int
+    attach_function :XQueryTextExtents16, [Display.ptr, :XID, XChar2b.ptr, :int, :pointer, :pointer, :pointer, XCharStruct.ptr], :int
     attach_function :XQueryTree, [Display.ptr, :Window, :pointer, :pointer, :pointer, :pointer], :Status
     attach_function :XRaiseWindow, [Display.ptr, :Window], :int
     attach_function :XReadBitmapFile, [Display.ptr, :Drawable, :string, :pointer, :pointer, :pointer, :pointer, :pointer], :int
     attach_function :XReadBitmapFileData, [:string, :pointer, :pointer, :pointer, :pointer, :pointer], :int
     attach_function :XRebindKeysym, [Display.ptr, :KeySym, :pointer, :int, :pointer, :int], :int
-    attach_function :XRecolorCursor, [Display.ptr, :Cursor, :pointer, :pointer], :int
+    attach_function :XRecolorCursor, [Display.ptr, :Cursor, XColor.ptr, XColor.ptr], :int
     attach_function :XRefreshKeyboardMapping, [XMappingEvent.ptr], :int
     attach_function :XRemoveFromSaveSet, [Display.ptr, :Window], :int
-    attach_function :XRemoveHost, [Display.ptr, :pointer], :int
-    attach_function :XRemoveHosts, [Display.ptr, :pointer, :int], :int
+    attach_function :XRemoveHost, [Display.ptr, XHostAddress.ptr], :int
+    attach_function :XRemoveHosts, [Display.ptr, XHostAddress.ptr, :int], :int
     attach_function :XReparentWindow, [Display.ptr, :Window, :Window, :int, :int], :int
     attach_function :XResetScreenSaver, [Display.ptr], :int
     attach_function :XResizeWindow, [Display.ptr, :Window, :uint, :uint], :int
@@ -354,7 +354,7 @@ module LibX11
     attach_function :XSetBackground, [Display.ptr, :GC, :ulong], :int
     attach_function :XSetClipMask, [Display.ptr, :GC, :Pixmap], :int
     attach_function :XSetClipOrigin, [Display.ptr, :GC, :int, :int], :int
-    attach_function :XSetClipRectangles, [Display.ptr, :GC, :int, :int, :pointer, :int, :int], :int
+    attach_function :XSetClipRectangles, [Display.ptr, :GC, :int, :int, XRectangle.ptr, :int, :int], :int
     attach_function :XSetCloseDownMode, [Display.ptr, :int], :int
     attach_function :XSetCommand, [Display.ptr, :Window, :pointer, :int], :int
     attach_function :XSetDashes, [Display.ptr, :GC, :int, :string, :int], :int
@@ -368,7 +368,7 @@ module LibX11
     attach_function :XSetIconName, [Display.ptr, :Window, :string], :int
     attach_function :XSetInputFocus, [Display.ptr, :Window, :int, :Time], :int
     attach_function :XSetLineAttributes, [Display.ptr, :GC, :uint, :int, :int, :int], :int
-    attach_function :XSetModifierMapping, [Display.ptr, :pointer], :int
+    attach_function :XSetModifierMapping, [Display.ptr, XModifierKeymap.ptr], :int
     attach_function :XSetPlaneMask, [Display.ptr, :GC, :ulong], :int
     attach_function :XSetPointerMapping, [Display.ptr, :pointer, :int], :int
     attach_function :XSetScreenSaver, [Display.ptr, :int, :int, :int, :int], :int
@@ -386,15 +386,15 @@ module LibX11
     attach_function :XSetWindowColormap, [Display.ptr, :Window, :Colormap], :int
     attach_function :XStoreBuffer, [Display.ptr, :string, :int, :int], :int
     attach_function :XStoreBytes, [Display.ptr, :string, :int], :int
-    attach_function :XStoreColor, [Display.ptr, :Colormap, :pointer], :int
-    attach_function :XStoreColors, [Display.ptr, :Colormap, :pointer, :int], :int
+    attach_function :XStoreColor, [Display.ptr, :Colormap, XColor.ptr], :int
+    attach_function :XStoreColors, [Display.ptr, :Colormap, XColor.ptr, :int], :int
     attach_function :XStoreName, [Display.ptr, :Window, :string], :int
     attach_function :XStoreNamedColor, [Display.ptr, :Colormap, :string, :ulong, :int], :int
     attach_function :XSync, [Display.ptr, :bool], :int, blocking: true
-    attach_function :XTextExtents, [:pointer, :string, :int, :pointer, :pointer, :pointer, :pointer], :int
-    attach_function :XTextExtents16, [:pointer, :pointer, :int, :pointer, :pointer, :pointer, :pointer], :int
-    attach_function :XTextWidth, [:pointer, :string, :int], :int
-    attach_function :XTextWidth16, [:pointer, :pointer, :int], :int
+    attach_function :XTextExtents, [XFontStruct.ptr, :string, :int, :pointer, :pointer, :pointer, XCharStruct.ptr], :int
+    attach_function :XTextExtents16, [XFontStruct.ptr, XChar2b.ptr, :int, :pointer, :pointer, :pointer, XCharStruct.ptr], :int
+    attach_function :XTextWidth, [XFontStruct.ptr, :string, :int], :int
+    attach_function :XTextWidth16, [XFontStruct.ptr, XChar2b.ptr, :int], :int
     attach_function :XTranslateCoordinates, [Display.ptr, :Window, :Window, :int, :int, :pointer, :pointer, :pointer], :bool
     attach_function :XUndefineCursor, [Display.ptr, :Window], :int
     attach_function :XUngrabButton, [Display.ptr, :uint, :uint, :Window], :int
@@ -408,8 +408,8 @@ module LibX11
     attach_function :XUnmapWindow, [Display.ptr, :Window], :int
     attach_function :XVendorRelease, [Display.ptr], :int
     attach_function :XWarpPointer, [Display.ptr, :Window, :Window, :int, :int, :uint, :uint, :int, :int], :int
-    attach_function :XWidthMMOfScreen, [:pointer], :int
-    attach_function :XWidthOfScreen, [:pointer], :int
+    attach_function :XWidthMMOfScreen, [Screen.ptr], :int
+    attach_function :XWidthOfScreen, [Screen.ptr], :int
     attach_function :XWindowEvent, [Display.ptr, :Window, :long, XEvent.ptr], :int
     attach_function :XWriteBitmapFile, [Display.ptr, :string, :Pixmap, :uint, :uint, :int, :int], :int
     attach_function :XSupportsLocale, [], :bool
@@ -428,19 +428,19 @@ module LibX11
     attach_function :XContextDependentDrawing, [:pointer], :bool
     attach_function :XDirectionalDependentDrawing, [:pointer], :bool
     attach_function :XContextualDrawing, [:pointer], :bool
-    attach_function :XExtentsOfFontSet, [:pointer], :pointer
+    attach_function :XExtentsOfFontSet, [:pointer], XFontSetExtents.ptr
     attach_function :XmbTextEscapement, [:pointer, :string, :int], :int
     attach_function :XwcTextEscapement, [:pointer, :pointer, :int], :int
     attach_function :Xutf8TextEscapement, [:pointer, :string, :int], :int
-    attach_function :XmbTextExtents, [:pointer, :string, :int, :pointer, :pointer], :int
-    attach_function :XwcTextExtents, [:pointer, :pointer, :int, :pointer, :pointer], :int
-    attach_function :Xutf8TextExtents, [:pointer, :string, :int, :pointer, :pointer], :int
-    attach_function :XmbTextPerCharExtents, [:pointer, :string, :int, :pointer, :pointer, :int, :pointer, :pointer, :pointer], :Status
-    attach_function :XwcTextPerCharExtents, [:pointer, :pointer, :int, :pointer, :pointer, :int, :pointer, :pointer, :pointer], :Status
-    attach_function :Xutf8TextPerCharExtents, [:pointer, :string, :int, :pointer, :pointer, :int, :pointer, :pointer, :pointer], :Status
-    attach_function :XmbDrawText, [Display.ptr, :Drawable, :GC, :int, :int, :pointer, :int], :void
-    attach_function :XwcDrawText, [Display.ptr, :Drawable, :GC, :int, :int, :pointer, :int], :void
-    attach_function :Xutf8DrawText, [Display.ptr, :Drawable, :GC, :int, :int, :pointer, :int], :void
+    attach_function :XmbTextExtents, [:pointer, :string, :int, XRectangle.ptr, XRectangle.ptr], :int
+    attach_function :XwcTextExtents, [:pointer, :pointer, :int, XRectangle.ptr, XRectangle.ptr], :int
+    attach_function :Xutf8TextExtents, [:pointer, :string, :int, XRectangle.ptr, XRectangle.ptr], :int
+    attach_function :XmbTextPerCharExtents, [:pointer, :string, :int, XRectangle.ptr, XRectangle.ptr, :int, :pointer, XRectangle.ptr, XRectangle.ptr], :Status
+    attach_function :XwcTextPerCharExtents, [:pointer, :pointer, :int, XRectangle.ptr, XRectangle.ptr, :int, :pointer, XRectangle.ptr, XRectangle.ptr], :Status
+    attach_function :Xutf8TextPerCharExtents, [:pointer, :string, :int, XRectangle.ptr, XRectangle.ptr, :int, :pointer, XRectangle.ptr, XRectangle.ptr], :Status
+    attach_function :XmbDrawText, [Display.ptr, :Drawable, :GC, :int, :int, XmbTextItem.ptr, :int], :void
+    attach_function :XwcDrawText, [Display.ptr, :Drawable, :GC, :int, :int, XwcTextItem.ptr, :int], :void
+    attach_function :Xutf8DrawText, [Display.ptr, :Drawable, :GC, :int, :int, XmbTextItem.ptr, :int], :void
     attach_function :XmbDrawString, [Display.ptr, :Drawable, :pointer, :GC, :int, :int, :string, :int], :void
     attach_function :XwcDrawString, [Display.ptr, :Drawable, :pointer, :GC, :int, :int, :pointer, :int], :void
     attach_function :Xutf8DrawString, [Display.ptr, :Drawable, :pointer, :GC, :int, :int, :string, :int], :void

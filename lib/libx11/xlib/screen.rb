@@ -12,7 +12,7 @@ module LibX11
         :ndepths,         :int,
         :depths,          Depth.ptr,
         :root_depth,      :int,
-        :root_visual,     :pointer,
+        :root_visual,     Visual.ptr,
         :default_gc,      :GC,
         :cmap,            :Colormap,
         :white_pixel,     :ulong,
