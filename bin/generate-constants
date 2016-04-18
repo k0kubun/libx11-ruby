@@ -1,0 +1,86 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+
+target = ARGV[0]
+abort "'#{target}' does not exist" unless File.exist?(target)
+
+source = File.read(target).split("\n")[109..714].join("\n")
+source = source.gsub(%r[key/button], 'key button')
+parts  = source.split("\n\n")
+
+class ConstGenerator
+  def initialize(parts)
+    @parts = parts
+    @entities = []
+  end
+
+  def write
+    @parts.each do |part|
+      write_part(part)
+    end
+    #write_part(@parts.first)
+  end
+
+  private
+
+  def write_part(part)
+    entity = convert_part(part)
+    puts entity
+    @entities << entity
+  end
+
+  def convert_part(part)
+    part = part.strip
+    case part
+    when %r[\A/\*+ ?\n.*\n \*+/\z]m
+      puts part.gsub(/^../, '#').sub(/\/\z/, '')
+    when %r[\A/\* .+ \*/\z]m
+      part.gsub(/^/, '# ')
+    when %r[\A#ifndef None\n.+\n#endif\z]m
+      _, line = part.match(%r[\A#ifndef None\n(.+)\n#endif\z]m).to_a
+      convert_line(line)
+    when %r[\A#define[ \t]]
+      part = part.gsub(%r{/\*([^/]+)\*/}m) { '/*' + $1.gsub("\n", '').gsub("\t", '') + '*/' }
+      part.split("\n").map { |line| convert_line(line) }.join("\n")
+    when %r[\A/\*[^/]+\*/\n#define]
+      _, comment, rest = part.match(%r[\A(/\*[^/]+\*/)\n(#define.+)\z]m).to_a
+      "#{comment.gsub(/^/, '# ')}\n#{rest.split("\n").map {|l| convert_line(l)}.join("\n")}"
+    else
+      abort "Unprocessible entity:\n'#{part}'"
+    end
+  end
+
+  def convert_line(line)
+    case line
+    when %r{\A#define [^ ]+ +[^ \t]+\t/\* [^/]+ \*/\z}
+      _, const, spaces, value, comment = line.match(%r{\A#define ([^ ]+)( +)([^ \t]+)\t/\* ([^/]+) \*/\z}).to_a
+      "#{const}#{spaces}= #{convert_value(value)} # #{comment}"
+    when %r{\A#define [^ ]+\t+[^ ]+ *\z}
+      _, const, spaces, value = line.match(%r{\A#define ([^ ]+)(\t+)([^ ]+) *\z}).to_a
+      "#{const}#{spaces.gsub("\t", '  ')}= #{convert_value(value)}"
+    when %r{\A#define[\t ][^ \t]+[\t ]+[^\t ]+[\t ]+/\*[^/]+\*/\z}
+      _, const, spaces, value, comment = line.match(%r{\A#define[\t ]([^ \t]+)([\t ]+)([^\t ]+)[\t ]+/\*([^/]+)\*/\z}).to_a
+      "#{const}#{spaces.gsub("\t", '    ')}= #{convert_value(value)} # #{comment}"
+    when %r{\A[\t ]+\z}
+      "\n"
+    when %r{\A/\* .+ \*/\z}
+      _, comment = line.match(%r{\A/\* (.+) \*/\z}).to_a
+      "# #{comment}"
+    when %r{\A/\*\*.+\*\*/\z}
+      _, comment = line.match(%r{\A/\*(\*.+\*)\*/\z}).to_a
+      "# #{comment}"
+    when %r{\A#define [^ ]+( +)[^ ]+\z}
+      _, const, spaces, value = line.match(%r{\A#define ([^ ]+)( +)([^ ]+)\z}).to_a
+      "#{const}#{spaces}= #{value}"
+    else
+      abort "Unprocessible line:\n#{line.inspect}"
+    end
+  end
+
+  def convert_value(value)
+    value.gsub('0L', '0').gsub('1L', '1').gsub('(int)', '')
+  end
+end
+
+ConstGenerator.new(parts).write
