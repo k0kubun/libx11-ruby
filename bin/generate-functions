@@ -15,12 +15,23 @@ class FFIGenerator
 
   def initialize(decls)
     @decls = decls
+    @printed = []
   end
 
   def print_ffi
     @decls.each do |decl|
-      puts ffi_by_decl(decl)
+      @printed << ffi_by_decl(decl)
     end
+
+    source = File.read('lib/libx11/xlib.rb')
+    source = source.gsub(/^    attach_function [^\n]+\n/m, '').sub(/  end\nend\n?\z/, '')
+
+    result = source + "    " + @printed.join("\n    ") + <<~SUFFIX
+
+        end
+      end
+    SUFFIX
+    File.write('lib/libx11/xlib.rb', result)
   end
 
   private
