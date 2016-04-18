@@ -42,10 +42,10 @@ module LibX11
     ]
 
     require 'libx11/xlib/x_edata_object'
+    require 'libx11/xlib/visual'
     require 'libx11/xlib/depth'
     require 'libx11/xlib/screen'
     require 'libx11/xlib/screen_format'
-    require 'libx11/xlib/visual'
     require 'libx11/xlib/x_arc'
     require 'libx11/xlib/x_char2b'
     require 'libx11/xlib/x_char_struct'
